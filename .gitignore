@@ -1,0 +1,9 @@
+### IDEA
+.idea/*
+!.idea/prettier.xml
+### Node
+node_modules
+
+### Yarn
+.yarn/cache
+.yarn/install-state.gz
