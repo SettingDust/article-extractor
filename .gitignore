@@ -1,6 +1,7 @@
 ### IDEA
 .idea/*
 !.idea/prettier.xml
+!.idea/codeStyles
 ### Node
 node_modules
 
