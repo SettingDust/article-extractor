@@ -1,6 +1,8 @@
 import { filter, map, switchMap } from 'rxjs/operators'
 import { ObservableInput, pipe } from 'rxjs'
+import condenseWhitespace from 'condense-whitespace'
 
+export const $condenseWhitespace = map<string, string>(condenseWhitespace)
 export const $text = map<Element, string>(
   (it) => it.textContent ?? (<HTMLElement>it).innerText
 )

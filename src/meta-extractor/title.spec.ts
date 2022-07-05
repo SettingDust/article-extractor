@@ -95,9 +95,9 @@ describe('meta extractor > title', () => {
             'twitter',
             'twitter-name',
             'post-title',
-            'a-title',
-            'class-title',
             'entry-title',
+            'class-title',
+            'a-title',
             'title-tag'
           ])
         )
@@ -127,6 +127,38 @@ describe('meta extractor > title', () => {
             tap((it) => expect(it.slice(1)).deep.eq(['foo', 'bar']))
           )
         ),
+        map((it) => of(it)),
+        zipAll()
+      )
+      .subscribe(() => done())
+  })
+
+  it('should not split without space', function (done) {
+    from([
+      '<meta property="og:title" content="foo|bar">',
+      '<meta property="og:title" content="foo-bar">',
+      '<meta property="og:title" content="foo\\bar">',
+      '<meta property="og:title" content="foo/bar">',
+      '<meta property="og:title" content="foo>bar">',
+      '<meta property="og:title" content="foo»bar">',
+      '<meta property="og:title" content="foo·bar">',
+      '<meta property="og:title" content="foo–bar">'
+    ])
+      .pipe(
+        switchMap((it) => $title(of(it))),
+        tap((it) => expect(it).not.eq('foo')),
+        tap((it) => expect(it).not.eq('bar')),
+        map((it) => of(it)),
+        zipAll()
+      )
+      .subscribe(() => done())
+  })
+
+  it('should process strangely space', function (done) {
+    of('<meta property="og:title" content="  foo    bar  ">')
+      .pipe(
+        switchMap((it) => $title(of(it))),
+        tap((it) => expect(it).eq('foo bar')),
         map((it) => of(it)),
         zipAll()
       )

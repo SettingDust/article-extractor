@@ -13,10 +13,7 @@ import {
 } from './utils.js'
 import { expect } from 'chai'
 
-const $parse = pipe(
-  map<string, Window & typeof globalThis>(parseHTML),
-  pluck('document')
-)
+const $parse = pipe(map(parseHTML), pluck('document'))
 
 describe('meta extractor > utils', () => {
   describe('$element', () => {
