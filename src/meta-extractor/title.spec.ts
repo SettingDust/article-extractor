@@ -154,7 +154,7 @@ describe('meta extractor > title', () => {
       .subscribe(() => done())
   })
 
-  it('should process strangely space', function (done) {
+  it('should process strange space', function (done) {
     of('<meta property="og:title" content="  foo    bar  ">')
       .pipe(
         switchMap((it) => $title(of(it))),

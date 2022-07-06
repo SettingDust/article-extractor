@@ -43,8 +43,8 @@ const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
 
 export default (document: Observable<Document>) =>
   $operators(document).pipe(
-    $condenseWhitespace,
     filter((it) => !isStringBlank(it)),
+    $condenseWhitespace,
     mergeMap((title) => {
       const separatorIndex = SEPARATORS.map((it) => title.lastIndexOf(it)).find(
         (it) => it !== -1
