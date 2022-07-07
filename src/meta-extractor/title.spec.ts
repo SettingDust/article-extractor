@@ -111,10 +111,10 @@ describe('meta extractor > title', () => {
         zipAll(),
         tap((it) =>
           expect(it).deep.eq([
+            'jsonld',
             'og',
             'twitter',
             'twitter-name',
-            'jsonld',
             'post-title',
             'entry-title',
             'class-title',

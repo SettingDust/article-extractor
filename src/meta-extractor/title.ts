@@ -24,6 +24,7 @@ import isStringBlank from 'is-string-blank'
 import { filter, map } from 'rxjs/operators'
 
 export const extractors: { [key: string]: StringMetaExtractor } = {
+  jsonld: pipe($jsonld, $searchJsonld('headline')),
   'meta og': pipe($query('meta[property="og:title"]'), $attr('content')),
   'meta twitter': pipe(
     $query('meta[property="twitter:title"]'),
@@ -33,7 +34,6 @@ export const extractors: { [key: string]: StringMetaExtractor } = {
     $query('meta[name="twitter:title"]'),
     $attr('content')
   ),
-  jsonld: pipe($jsonld, $searchJsonld('headline')),
   'post title class': pipe($queryByClass('post-title'), $text),
   'entry title class': pipe($queryByClass('entry-title'), $text),
   'h1 h2 like title': pipe($query(':is(h1, h2)[class*="title" i]'), $text),

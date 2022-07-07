@@ -7,6 +7,10 @@ import isStringBlank from 'is-string-blank'
 import { filter, map } from 'rxjs/operators'
 
 export const extractors: { [key: string]: StringMetaExtractor } = {
+  jsonld: pipe(
+    $jsonld,
+    $searchJsonld('url', (it) => it['@type']?.endsWith('Page'))
+  ),
   'meta og': pipe($query('meta[property="og:url"]'), $attr('content')),
   'meta twitter': pipe(
     $query('meta[property="twitter:url"]'),
@@ -15,10 +19,6 @@ export const extractors: { [key: string]: StringMetaExtractor } = {
   'meta twitter attr name': pipe(
     $query('meta[name="twitter:url"]'),
     $attr('content')
-  ),
-  jsonld: pipe(
-    $jsonld,
-    $searchJsonld('url', (it) => it['@type']?.endsWith('Page'))
   ),
   'link canonical': pipe($query('link[rel="canonical"]'), $attr('href')),
   'link alternate': pipe($query('link[rel="alternate"]'), $attr('href')),

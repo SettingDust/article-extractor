@@ -1,4 +1,4 @@
-import { filter, find, first, map, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
 import {
   from,
   merge,
@@ -45,15 +45,14 @@ export const $searchJsonld = <T>(
       switchMap(({ '@graph': graph, ...props }) =>
         merge(
           from(Object.entries(props)).pipe(
-            find(([key]) => key.endsWith(name)),
-            filter((it) => it !== undefined),
+            filter(([key]) => key.endsWith(name)),
             <OperatorFunction<[string, T], T>>pluck(1)
           ),
           from(graph ?? []).pipe(
             filter((it) => predicate(it)),
             <OperatorFunction<Thing, T>>pluck(name)
           )
-        ).pipe(first())
+        )
       )
     )
   )

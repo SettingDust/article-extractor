@@ -95,10 +95,10 @@ describe('meta extractor > link', () => {
         zipAll(),
         tap((it) =>
           expect(it).deep.eq([
+            'https://jsonld.com',
             'https://og.com',
             'https://twitter.com',
             'https://twitter-name.com',
-            'https://jsonld.com',
             'https://canonical.com',
             'https://alternate.com',
             'https://post-title.com',
