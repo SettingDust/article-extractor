@@ -6,6 +6,7 @@ import { parseHTML } from 'linkedom'
 import {
   $attr,
   $element,
+  $jsonld,
   $query,
   $queryByClass,
   $queryById,
@@ -101,6 +102,33 @@ describe('meta extractor > utils', () => {
           tap((it) => expect(it).eq('bar')),
           map((it) => of(it)),
           zipAll()
+        )
+        .subscribe(() => done())
+    })
+  })
+  describe('$jsonld', () => {
+    it('should parse jsonld', function (done) {
+      of(`<script type='application/ld+json'>
+                   {
+                     "@context": "https://schema.org/",
+                     "@id": "https://foo.com",
+                     "@type": "Example",
+                     "name": "Bar",
+                     "description": "A small bar"
+                   }
+                 </script>`)
+        .pipe(
+          $parse,
+          $jsonld,
+          tap((it) =>
+            expect(it).deep.eq({
+              '@context': 'https://schema.org/',
+              '@id': 'https://foo.com',
+              '@type': 'Example',
+              name: 'Bar',
+              description: 'A small bar'
+            })
+          )
         )
         .subscribe(() => done())
     })

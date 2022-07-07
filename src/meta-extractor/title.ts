@@ -2,7 +2,15 @@
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
 import { StringMetaExtractor } from './index.js'
-import { $attr, $condenseWhitespace, $query, $queryByClass, $text } from './utils.js'
+import {
+  $attr,
+  $condenseWhitespace,
+  $jsonld,
+  $query,
+  $queryByClass,
+  $searchJsonld,
+  $text
+} from './utils.js'
 import {
   concatMap,
   distinct,
@@ -25,6 +33,7 @@ export const extractors: { [key: string]: StringMetaExtractor } = {
     $query('meta[name="twitter:title"]'),
     $attr('content')
   ),
+  jsonld: pipe($jsonld, $searchJsonld('headline')),
   'post title class': pipe($queryByClass('post-title'), $text),
   'entry title class': pipe($queryByClass('entry-title'), $text),
   'h1 h2 like title': pipe($query(':is(h1, h2)[class*="title" i]'), $text),
@@ -43,7 +52,7 @@ const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
 
 export default (document: Observable<Document>) =>
   $operators(document).pipe(
-    filter((it) => !isStringBlank(it)),
+    filter((it) => it && !isStringBlank(it)),
     $condenseWhitespace,
     mergeMap((title) => {
       const separatorIndex = SEPARATORS.map((it) => title.lastIndexOf(it)).find(

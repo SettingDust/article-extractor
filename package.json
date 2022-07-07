@@ -23,8 +23,10 @@
     "condense-whitespace": "^3.0.0",
     "is-string-blank": "^1.0.1",
     "linkedom": "^0.14.12",
+    "nano-memoize": "^1.3.0",
     "normalize-url": "^7.0.3",
     "rxjs": "^7.5.5",
+    "schema-dts": "^1.1.0",
     "tidy-url": "^1.4.4",
     "urlpattern-polyfill": "^5.0.3"
   }

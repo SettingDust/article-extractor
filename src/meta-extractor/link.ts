@@ -1,7 +1,7 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-url/index.js
 
 import { StringMetaExtractor } from './index.js'
-import { $attr, $query } from './utils.js'
+import { $attr, $jsonld, $query, $searchJsonld } from './utils.js'
 import { concatMap, distinct, from, Observable, pipe } from 'rxjs'
 import isStringBlank from 'is-string-blank'
 import { filter, map } from 'rxjs/operators'
@@ -15,6 +15,10 @@ export const extractors: { [key: string]: StringMetaExtractor } = {
   'meta twitter attr name': pipe(
     $query('meta[name="twitter:url"]'),
     $attr('content')
+  ),
+  jsonld: pipe(
+    $jsonld,
+    $searchJsonld('url', (it) => it['@type']?.endsWith('Page'))
   ),
   'link canonical': pipe($query('link[rel="canonical"]'), $attr('href')),
   'link alternate': pipe($query('link[rel="alternate"]'), $attr('href')),
@@ -34,7 +38,7 @@ const $operators = (document: Observable<Document>) =>
 
 export default (document: Observable<Document>) =>
   $operators(document).pipe(
-    filter((it) => !isStringBlank(it)),
+    filter((it) => it && !isStringBlank(it)),
     map((it) => it.trim()),
     distinct(),
     map((link) => ({ link }))

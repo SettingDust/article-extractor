@@ -1,6 +1,16 @@
-import { filter, map, switchMap } from 'rxjs/operators'
-import { ObservableInput, pipe } from 'rxjs'
+import { filter, find, first, map, switchMap } from 'rxjs/operators'
+import {
+  from,
+  merge,
+  ObservableInput,
+  of,
+  OperatorFunction,
+  pipe,
+  pluck
+} from 'rxjs'
 import condenseWhitespace from 'condense-whitespace'
+import memoized from 'nano-memoize'
+import { Graph, Thing } from 'schema-dts'
 
 export const $condenseWhitespace = map<string, string>(condenseWhitespace)
 export const $text = map<Element, string>(
@@ -8,7 +18,7 @@ export const $text = map<Element, string>(
 )
 export const $element = (
   fn: (document: Document) => ObservableInput<Element>
-) => switchMap<Document, ObservableInput<Element>>(fn)
+) => memoized(switchMap<Document, ObservableInput<Element>>(fn))
 export const $query = (selector: string) =>
   $element((it) => it.querySelectorAll(selector))
 export const $queryByClass = (className: string) =>
@@ -19,4 +29,31 @@ export const $attr = (name: string) =>
   pipe(
     map<Element, string>((it) => it.getAttribute(name)),
     filter((it) => it !== null)
+  )
+export const $jsonld = pipe(
+  $query('script[type="application/ld+json"]'),
+  map((it) => it as globalThis.HTMLScriptElement),
+  pluck('innerText'),
+  map((it) => JSON.parse(it) as Graph)
+)
+export const $searchJsonld = <T>(
+  name: string,
+  predicate: (obj: Thing) => boolean = () => true
+): OperatorFunction<Graph, T> =>
+  switchMap((graph: Graph) =>
+    of(graph).pipe(
+      switchMap(({ '@graph': graph, ...props }) =>
+        merge(
+          from(Object.entries(props)).pipe(
+            find(([key]) => key.endsWith(name)),
+            filter((it) => it !== undefined),
+            <OperatorFunction<[string, T], T>>pluck(1)
+          ),
+          from(graph ?? []).pipe(
+            filter((it) => predicate(it)),
+            <OperatorFunction<Thing, T>>pluck(name)
+          )
+        ).pipe(first())
+      )
+    )
   )

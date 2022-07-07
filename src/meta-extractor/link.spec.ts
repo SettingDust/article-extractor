@@ -26,10 +26,39 @@ describe('meta extractor > link', () => {
       .subscribe(() => done())
   })
 
-  it('should read meta twitter title', function (done) {
+  it('should read meta twitter url', function (done) {
     from([
       '<meta property="twitter:url" content="https://foo.com">',
       '<meta name="twitter:url" content="https://foo.com">'
+    ])
+      .pipe($singleLink)
+      .subscribe(() => done())
+  })
+
+  it('should read link tag url', function (done) {
+    from([
+      '<link rel="canonical" href="https://foo.com">',
+      '<link rel="alternate" href="https://foo.com">'
+    ])
+      .pipe($singleLink)
+      .subscribe(() => done())
+  })
+
+  it('should read json ld', function (done) {
+    from([
+      `<script type='application/ld+json'>
+         {
+           "url": "https://foo.com"
+         }
+       </script>`,
+      `<script type='application/ld+json'>
+         {
+           "@graph": [{
+             "@type": "WebPage",
+             "url": "https://foo.com"
+           }]
+         }
+       </script>`
     ])
       .pipe($singleLink)
       .subscribe(() => done())
@@ -58,7 +87,7 @@ describe('meta extractor > link', () => {
   })
 
   it('should with correct priority', function (done) {
-    from(['./test/meta-class-link.html'])
+    from(['./test/generic-links.html'])
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),
         $link,
@@ -69,6 +98,9 @@ describe('meta extractor > link', () => {
             'https://og.com',
             'https://twitter.com',
             'https://twitter-name.com',
+            'https://jsonld.com',
+            'https://canonical.com',
+            'https://alternate.com',
             'https://post-title.com',
             'https://entry-title.com',
             'https://class-title.com',

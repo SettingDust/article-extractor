@@ -44,6 +44,26 @@ describe('meta extractor > title', () => {
       .subscribe(() => done())
   })
 
+  it('should read json ld', function (done) {
+    from([
+      `<script type='application/ld+json'>
+         {
+           "headline": "foo"
+         }
+       </script>`,
+      `<script type='application/ld+json'>
+         {
+           "@graph": [{
+             "@type": "Article",
+             "headline": "foo"
+           }]
+         }
+       </script>`
+    ])
+      .pipe($singleTitle)
+      .subscribe(() => done())
+  })
+
   it('should read title tag', function (done) {
     from(['<html lang=""><head><title>foo</title></head></html>'])
       .pipe($singleTitle)
@@ -83,7 +103,7 @@ describe('meta extractor > title', () => {
   })
 
   it('should with correct priority', function (done) {
-    from(['./test/meta-class-title.html'])
+    from(['./test/generic-titles.html'])
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),
         $title,
@@ -94,6 +114,7 @@ describe('meta extractor > title', () => {
             'og',
             'twitter',
             'twitter-name',
+            'jsonld',
             'post-title',
             'entry-title',
             'class-title',
