@@ -10,6 +10,7 @@ import {
   $query,
   $queryByClass,
   $queryById,
+  $searchJsonld,
   $text
 } from './utils.js'
 import { expect } from 'chai'
@@ -107,7 +108,7 @@ describe('meta extractor > utils', () => {
     })
   })
   describe('$jsonld', () => {
-    it('should parse jsonld', function (done) {
+    it('should parse', function (done) {
       of(`<script type='application/ld+json'>
                    {
                      "@context": "https://schema.org/",
@@ -129,6 +130,55 @@ describe('meta extractor > utils', () => {
               description: 'A small bar'
             })
           )
+        )
+        .subscribe(() => done())
+    })
+  })
+  describe('', () => {
+    it('should work', function (done) {
+      of(`<script type='application/ld+json'>
+                   {
+                     "@context": "https://schema.org/",
+                     "name": "Bar",
+                     "@graph": [{
+                        "name": "Bar"
+                      }]
+                   }
+                 </script>`)
+        .pipe(
+          $parse,
+          $jsonld,
+          $searchJsonld('name'),
+          tap((it) => expect(it).eq('Bar')),
+          map((it) => of(it)),
+          zipAll(),
+          tap((it) => expect(it).length(2))
+        )
+        .subscribe(() => done())
+    })
+
+    it('should use predicate', function (done) {
+      of(`<script type='application/ld+json'>
+                   {
+                     "@context": "https://schema.org/",
+                     "name": "Bar",
+                     "@graph": [{
+                        "@type": "Article",
+                        "name": "Bar"
+                      },{
+                        "@type": "WebPage",
+                        "name": "Bar"
+                      }]
+                   }
+                 </script>`)
+        .pipe(
+          $parse,
+          $jsonld,
+          $searchJsonld('name', (it) => it['@type'] === 'Article'),
+          tap((it) => expect(it).eq('Bar')),
+          map((it) => of(it)),
+          zipAll(),
+          tap((it) => expect(it).length(2))
         )
         .subscribe(() => done())
     })
