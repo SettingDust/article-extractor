@@ -86,7 +86,7 @@ describe('meta extractor > link', () => {
       .subscribe(() => done())
   })
 
-  it('should with correct priority', function (done) {
+  it('should read correctly', function (done) {
     from(['./test/generic-links.html'])
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),

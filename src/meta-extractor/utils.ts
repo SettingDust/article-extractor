@@ -23,6 +23,8 @@ export const $query = (selector: string) =>
   $element((it) => it.querySelectorAll(selector))
 export const $queryByClass = (className: string) =>
   $element((it) => it.getElementsByClassName(className))
+export const $queryByTag = (tag: string) =>
+  $element((it) => it.getElementsByTagName(tag))
 export const $queryById = (id: string) =>
   $element((it) => [it.getElementById(id)])
 export const $attr = (name: string) =>

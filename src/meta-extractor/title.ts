@@ -1,7 +1,7 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-title/index.js
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
-import { StringMetaExtractor } from './index.js'
+import { MetaExtractor } from './index.js'
 import {
   $attr,
   $condenseWhitespace,
@@ -23,7 +23,7 @@ import {
 import isStringBlank from 'is-string-blank'
 import { filter, map } from 'rxjs/operators'
 
-export const extractors: { [key: string]: StringMetaExtractor } = {
+export const extractors: { [key: string]: MetaExtractor<string> } = {
   jsonld: pipe($jsonld, $searchJsonld('headline')),
   'meta og': pipe($query('meta[property="og:title"]'), $attr('content')),
   'meta twitter': pipe(

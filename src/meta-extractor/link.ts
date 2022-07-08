@@ -1,12 +1,12 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-url/index.js
 
-import { StringMetaExtractor } from './index.js'
+import { MetaExtractor } from './index.js'
 import { $attr, $jsonld, $query, $searchJsonld } from './utils.js'
 import { concatMap, distinct, from, Observable, pipe } from 'rxjs'
 import isStringBlank from 'is-string-blank'
 import { filter, map } from 'rxjs/operators'
 
-export const extractors: { [key: string]: StringMetaExtractor } = {
+export const extractors: { [key: string]: MetaExtractor<string> } = {
   jsonld: pipe(
     $jsonld,
     $searchJsonld('url', (it) => it['@type']?.endsWith('Page'))
