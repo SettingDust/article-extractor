@@ -2,66 +2,60 @@
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
 import { MetaExtractor } from './index.js'
-import {
-  $attr,
-  $condenseWhitespace,
-  $jsonld,
-  $query,
-  $queryByClass,
-  $searchJsonld,
-  $text
-} from './utils.js'
-import {
-  concatMap,
-  distinct,
-  from,
-  mergeMap,
-  Observable,
-  pipe,
-  pluck
-} from 'rxjs'
-import isStringBlank from 'is-string-blank'
-import { filter, map } from 'rxjs/operators'
+import { distinct, mergeMap, Observable, pipe, pluck } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { $operators } from './utils.js'
+import { $element, $jsonld, $string } from '../utils/index.js'
 
 export const extractors: { [key: string]: MetaExtractor<string> } = {
-  jsonld: pipe($jsonld, $searchJsonld('headline')),
-  'meta og': pipe($query('meta[property="og:title"]'), $attr('content')),
+  jsonld: pipe($jsonld, $jsonld.get('headline')),
+  'meta og': pipe(
+    $element.select.query('meta[property="og:title"]'),
+    $element.attr('content')
+  ),
   'meta twitter': pipe(
-    $query('meta[property="twitter:title"]'),
-    $attr('content')
+    $element.select.query('meta[property="twitter:title"]'),
+    $element.attr('content')
   ),
   'meta twitter attr name': pipe(
-    $query('meta[name="twitter:title"]'),
-    $attr('content')
+    $element.select.query('meta[name="twitter:title"]'),
+    $element.attr('content')
   ),
-  'post title class': pipe($queryByClass('post-title'), $text),
-  'entry title class': pipe($queryByClass('entry-title'), $text),
-  'h1 h2 like title': pipe($query(':is(h1, h2)[class*="title" i]'), $text),
+  'post title class': pipe(
+    $element.select.className('post-title'),
+    $element.text
+  ),
+  'entry title class': pipe(
+    $element.select.className('entry-title'),
+    $element.text
+  ),
+  'h1 h2 like title': pipe(
+    $element.select.query(':is(h1, h2)[class*="title" i]'),
+    $element.text
+  ),
   title: pipe(pluck('title'))
 }
-
-const $operators = (document: Observable<Document>) =>
-  from(Object.values(extractors)).pipe(
-    map((it) => it(document)),
-    concatMap((it) => it)
-  )
 
 const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `
 )
 
 export default (document: Observable<Document>) =>
-  $operators(document).pipe(
-    filter((it) => it && !isStringBlank(it)),
-    $condenseWhitespace,
+  document.pipe(
+    $operators(extractors),
+    $string.validate,
+    $string.notBlank,
+    $string.condense,
     mergeMap((title) => {
       const separatorIndex = SEPARATORS.map((it) => title.lastIndexOf(it)).find(
         (it) => it !== -1
       )
       const titles = [title]
       if (separatorIndex !== undefined) {
-        titles.push(title.slice(0, separatorIndex))
-        titles.push(title.slice(separatorIndex + 3))
+        titles.push(
+          title.slice(0, separatorIndex),
+          title.slice(separatorIndex + 3)
+        )
       }
       return titles
     }),

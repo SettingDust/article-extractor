@@ -1,45 +1,56 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-url/index.js
 
 import { MetaExtractor } from './index.js'
-import { $attr, $jsonld, $query, $searchJsonld } from './utils.js'
-import { concatMap, distinct, from, Observable, pipe } from 'rxjs'
-import isStringBlank from 'is-string-blank'
-import { filter, map } from 'rxjs/operators'
+import { $operators } from './utils.js'
+import { distinct, Observable, pipe } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { $element, $jsonld, $string, $url } from '../utils/index.js'
 
 export const extractors: { [key: string]: MetaExtractor<string> } = {
   jsonld: pipe(
     $jsonld,
-    $searchJsonld('url', (it) => it['@type']?.endsWith('Page'))
+    $jsonld.get('url', (it) => it['@type']?.endsWith('Page'))
   ),
-  'meta og': pipe($query('meta[property="og:url"]'), $attr('content')),
+  'meta og': pipe(
+    $element.select.query('meta[property="og:url"]'),
+    $element.attr('content')
+  ),
   'meta twitter': pipe(
-    $query('meta[property="twitter:url"]'),
-    $attr('content')
+    $element.select.query('meta[property="twitter:url"]'),
+    $element.attr('content')
   ),
   'meta twitter attr name': pipe(
-    $query('meta[name="twitter:url"]'),
-    $attr('content')
+    $element.select.query('meta[name="twitter:url"]'),
+    $element.attr('content')
   ),
-  'link canonical': pipe($query('link[rel="canonical"]'), $attr('href')),
-  'link alternate': pipe($query('link[rel="alternate"]'), $attr('href')),
-  'post title class': pipe($query('.post-title a'), $attr('href')),
-  'entry title class': pipe($query('.entry-title a'), $attr('href')),
+  'link canonical': pipe(
+    $element.select.query('link[rel="canonical"]'),
+    $element.attr('href')
+  ),
+  'link alternate': pipe(
+    $element.select.query('link[rel="alternate"]'),
+    $element.attr('href')
+  ),
+  'post title class': pipe(
+    $element.select.query('.post-title a'),
+    $element.attr('href')
+  ),
+  'entry title class': pipe(
+    $element.select.query('.entry-title a'),
+    $element.attr('href')
+  ),
   'h1 h2 like title': pipe(
-    $query(':is(h1, h2)[class*="title" i] a'),
-    $attr('href')
+    $element.select.query(':is(h1, h2)[class*="title" i] a'),
+    $element.attr('href')
   )
 }
 
-const $operators = (document: Observable<Document>) =>
-  from(Object.values(extractors)).pipe(
-    map((it) => it(document)),
-    concatMap((it) => it)
-  )
-
 export default (document: Observable<Document>) =>
-  $operators(document).pipe(
-    filter((it) => it && !isStringBlank(it)),
-    map((it) => it.trim()),
+  document.pipe(
+    $operators(extractors),
+    $string.validate,
+    $string.trim,
+    $url.validate,
     distinct(),
     map((link) => ({ link }))
   )

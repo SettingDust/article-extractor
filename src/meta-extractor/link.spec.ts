@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { parseHTML } from 'linkedom'
 import { from, of, pipe, pluck, switchMap, tap, zipAll } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { readFile } from 'fs/promises'
+import { readFile } from 'node:fs/promises'
 import link from './link.js'
 
 const $link = pipe(
@@ -19,7 +19,7 @@ const $singleLink = pipe(
   tap((it) => expect(it).eq('https://foo.com'))
 )
 
-describe('meta extractor > link', () => {
+describe('meta extractor.link', () => {
   it('should read meta og title', function (done) {
     of('<meta property="og:url" content="https://foo.com">')
       .pipe($singleLink)

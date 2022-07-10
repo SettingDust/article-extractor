@@ -14,7 +14,7 @@ import {
   zipAll
 } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { readFile } from 'fs/promises'
+import { readFile } from 'node:fs/promises'
 
 const $title = pipe(
   map<string, Window & typeof globalThis>(parseHTML),
@@ -28,7 +28,7 @@ const $singleTitle = pipe(
   tap((it) => expect(it).eq('foo'))
 )
 
-describe('meta extractor > title', () => {
+describe('meta extractor.title', () => {
   it('should read meta og title', function (done) {
     of('<meta property="og:title" content="foo">')
       .pipe($singleTitle)

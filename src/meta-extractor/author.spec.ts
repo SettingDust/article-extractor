@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { parseHTML } from 'linkedom'
 import { from, of, pipe, pluck, switchMap, tap, zipAll } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { readFile } from 'fs/promises'
+import { readFile } from 'node:fs/promises'
 import author from './author.js'
 import authorUrl from './author-url.js'
 
@@ -22,7 +22,7 @@ const $url = pipe(
   pluck('author', 'url')
 )
 
-describe('meta extractor > author', () => {
+describe('meta extractor.author', () => {
   it('should read name correctly', function (done) {
     from(['./test/generic-authors.html'])
       .pipe(
