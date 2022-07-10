@@ -6,5 +6,6 @@ export default <Config.InitialOptions>{
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest'
   },
-  coverageReporters: ['text', 'html']
+  coverageReporters: ['text', 'html'],
+  collectCoverageFrom: ['src/**/*.{ts,js}']
 }
