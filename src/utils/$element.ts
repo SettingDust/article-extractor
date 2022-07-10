@@ -1,24 +1,33 @@
+/* eslint-disable unicorn/prefer-query-selector */
 import { ObservableInput, pipe } from 'rxjs'
 import memoized from 'nano-memoize'
 import { filter, map, switchMap } from 'rxjs/operators'
 
-console.log(await import('./$element/select.js'))
-
-export const select = Object.assign(
+const select = Object.assign(
   (function_: (document: Document) => ObservableInput<Element>) =>
     memoized(switchMap<Document, ObservableInput<Element>>(function_)),
-  await import('./$element/select.js')
+  {
+    query: (selector: string) => select((it) => it.querySelectorAll(selector)),
+    className: (name: string) =>
+      select((it) => it.getElementsByClassName(name)),
+    tag: (tag: string) => select((it) => it.getElementsByTagName(tag)),
+    id: (id: string) => select((it) => [it.getElementById(id)])
+  }
 )
 
-export const attr = (name: string) =>
+const attribute = (name: string) =>
   pipe(
     map<Element, string>((it) => it.getAttribute(name)),
     filter((it) => it !== null)
   )
 
-export const text = map<Element, string>(
+const text = map<Element, string>(
   // eslint-disable-next-line unicorn/prefer-dom-node-text-content
   (it) => it.textContent ?? (<HTMLElement>it).innerText
 )
 
-export * as default from './$element.js'
+export default {
+  select,
+  attribute,
+  text
+}

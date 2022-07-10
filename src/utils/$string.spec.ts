@@ -1,16 +1,13 @@
 import { of, tap } from 'rxjs'
-import { condense } from './$string.js'
-import { expect } from 'chai'
+import $string from './$string'
 
-describe('$string', () => {
-  describe('condense', () => {
-    it('should remove extra spaces', function (done) {
-      of('   a   b   ')
-        .pipe(
-          condense,
-          tap((it) => expect(it).eq('a b'))
-        )
-        .subscribe(() => done())
-    })
+describe('condense', () => {
+  it('should remove extra spaces', function (done) {
+    of('   a   b   ')
+      .pipe(
+        $string.condense,
+        tap((it) => expect(it).toBe('a b'))
+      )
+      .subscribe(() => done())
   })
 })

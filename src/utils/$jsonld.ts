@@ -1,15 +1,16 @@
 import { from, merge, of, OperatorFunction, pipe, pluck } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 import { Graph, Thing } from 'schema-dts'
+import $element from './$element'
 
-export const parse = pipe(
-  // $element.select.query('script[type="application/ld+json"]'),
+const parse = pipe(
+  $element.select.query('script[type="application/ld+json"]'),
   map((it) => it as globalThis.HTMLScriptElement),
   pluck('innerText'),
   map((it) => JSON.parse(it) as Graph)
 )
 
-export const get = <T>(
+const get = <T>(
   name: string,
   predicate: (thing: Thing) => boolean = () => true
 ): OperatorFunction<Graph, T> =>

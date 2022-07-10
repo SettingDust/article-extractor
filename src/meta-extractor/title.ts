@@ -1,25 +1,28 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-title/index.js
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
-import { MetaExtractor } from './index.js'
+import { MetaExtractor } from '.'
 import { distinct, mergeMap, Observable, pipe, pluck } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { $operators } from './utils.js'
-import { $element, $jsonld, $string } from '../utils/index.js'
+import { $operators } from './utils'
+import $jsonld from '../utils/$jsonld'
+import $element from '../utils/$element'
+import $string from '../utils/$string'
+import memoized from 'nano-memoize'
 
 export const extractors: { [key: string]: MetaExtractor<string> } = {
   jsonld: pipe($jsonld, $jsonld.get('headline')),
   'meta og': pipe(
     $element.select.query('meta[property="og:title"]'),
-    $element.attr('content')
+    $element.attribute('content')
   ),
   'meta twitter': pipe(
     $element.select.query('meta[property="twitter:title"]'),
-    $element.attr('content')
+    $element.attribute('content')
   ),
   'meta twitter attr name': pipe(
     $element.select.query('meta[name="twitter:title"]'),
-    $element.attr('content')
+    $element.attribute('content')
   ),
   'post title class': pipe(
     $element.select.className('post-title'),
@@ -46,19 +49,21 @@ export default (document: Observable<Document>) =>
     $string.validate,
     $string.notBlank,
     $string.condense,
-    mergeMap((title) => {
-      const separatorIndex = SEPARATORS.map((it) => title.lastIndexOf(it)).find(
-        (it) => it !== -1
-      )
-      const titles = [title]
-      if (separatorIndex !== undefined) {
-        titles.push(
-          title.slice(0, separatorIndex),
-          title.slice(separatorIndex + 3)
-        )
-      }
-      return titles
-    }),
+    mergeMap(
+      memoized((title) => {
+        const separatorIndex = SEPARATORS.map((it) =>
+          title.lastIndexOf(it)
+        ).find((it) => it !== -1)
+        const titles = [title]
+        if (separatorIndex !== undefined) {
+          titles.push(
+            title.slice(0, separatorIndex),
+            title.slice(separatorIndex + 3)
+          )
+        }
+        return titles
+      })
+    ),
     distinct(),
     map((title) => ({ title }))
   )

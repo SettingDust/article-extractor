@@ -6,17 +6,17 @@
   "packageManager": "yarn@3.2.1",
   "type": "module",
   "scripts": {
-    "test": "mocha",
-    "test:coverage": "nyc yarn run test"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules TS_JEST_LOG=ts-jest.log jest",
+    "test:coverage": "yarn test --coverage"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.1",
-    "@types/mocha": "^9.1.1",
+    "@swc/core": "^1.2.211",
+    "@swc/jest": "^0.2.21",
+    "@types/jest": "^28.1.4",
     "@types/node": "~16",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
-    "chai": "^4.3.6",
-    "esbuild": "^0.14.48",
+    "cross-env": "^7.0.3",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.2.5",
@@ -24,8 +24,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unicorn": "^43.0.1",
-    "mocha": "^10.0.0",
-    "nyc": "^15.1.0",
+    "jest": "^28.1.2",
     "prettier": "^2.7.1",
     "ts-node": "^10.8.2",
     "typescript": "^4.7.4"
