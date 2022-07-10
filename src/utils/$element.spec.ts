@@ -3,13 +3,14 @@
 import { from, of, tap, zipAll } from 'rxjs'
 import { expect } from 'chai'
 import { map } from 'rxjs/operators'
-import $element from './$element.js'
 import $document from './$document.js'
+import { $element } from './index.js'
 
 describe('$element', () => {
   describe('select', () => {
     describe('query', () => {
       it('should respect css selector', function (done) {
+        console.log(3)
         from([
           '<h1 id="foo">bar</h1><div>bad</div>',
           '<h1 class="foo">bar</h1><div>bad</div>',
@@ -24,6 +25,7 @@ describe('$element', () => {
             zipAll()
           )
           .subscribe(() => done())
+        console.log(2)
       })
     })
     describe('className', () => {

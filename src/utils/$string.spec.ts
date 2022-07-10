@@ -2,7 +2,7 @@ import { of, tap } from 'rxjs'
 import { condense } from './$string.js'
 import { expect } from 'chai'
 
-describe('$element.text', () => {
+describe('$string', () => {
   describe('condense', () => {
     it('should remove extra spaces', function (done) {
       of('   a   b   ')

@@ -2,6 +2,8 @@ import { ObservableInput, pipe } from 'rxjs'
 import memoized from 'nano-memoize'
 import { filter, map, switchMap } from 'rxjs/operators'
 
+console.log(await import('./$element/select.js'))
+
 export const select = Object.assign(
   (function_: (document: Document) => ObservableInput<Element>) =>
     memoized(switchMap<Document, ObservableInput<Element>>(function_)),
@@ -18,3 +20,5 @@ export const text = map<Element, string>(
   // eslint-disable-next-line unicorn/prefer-dom-node-text-content
   (it) => it.textContent ?? (<HTMLElement>it).innerText
 )
+
+export * as default from './$element.js'
