@@ -15,15 +15,30 @@ const select = Object.assign(
   }
 )
 
-const attribute = (name: string) =>
-  pipe(
-    map<Element, string>((it) => it.getAttribute(name)),
-    filter((it) => it !== null)
-  )
+const attribute = Object.assign(
+  (name: string) =>
+    pipe(
+      map<Element, string>((it) => it.getAttribute(name)),
+      filter((it) => it !== null)
+    ),
+  {
+    content: (selector: string) =>
+      pipe(select.query(selector), attribute('content')),
+    href: (selector: string) => pipe(select.query(selector), attribute('href')),
+    datetime: (selector: string) =>
+      pipe(select.query(selector), attribute('datetime'))
+  }
+)
 
-const text = map<Element, string>(
-  // eslint-disable-next-line unicorn/prefer-dom-node-text-content
-  (it) => it.textContent ?? (<HTMLElement>it).innerText
+const text = Object.assign(
+  map<Element, string>(
+    // eslint-disable-next-line unicorn/prefer-dom-node-text-content
+    (it) => it.textContent ?? (<HTMLElement>it).innerText
+  ),
+  {
+    className: (name: string) => pipe(select.className(name), text),
+    query: (selector: string) => pipe(select.query(selector), text)
+  }
 )
 
 export default {

@@ -32,6 +32,7 @@
   "dependencies": {
     "@stdlib/assert-is-string": "^0.0.7",
     "@stdlib/assert-is-uri": "^0.0.8",
+    "chrono-node": "^2.3.9",
     "condense-whitespace": "^3.0.0",
     "is-string-blank": "^1.0.1",
     "linkedom": "^0.14.12",

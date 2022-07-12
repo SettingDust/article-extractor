@@ -5,15 +5,16 @@ import $jsonld from './$jsonld'
 
 describe('parse', () => {
   it('should parse element', function (done) {
-    of(`<script type='application/ld+json'>
-                   {
-                     "@context": "https://schema.org/",
-                     "@id": "https://foo.com",
-                     "@type": "Example",
-                     "name": "Bar",
-                     "description": "A small bar"
-                   }
-                 </script>`)
+    of(`
+        <script type='application/ld+json'>
+          {
+            "@context": "https://schema.org/",
+            "@id": "https://foo.com",
+            "@type": "Example",
+            "name": "Bar",
+            "description": "A small bar"
+          }
+        </script>`)
       .pipe(
         $document,
         $jsonld,
@@ -32,15 +33,16 @@ describe('parse', () => {
 })
 describe('search', () => {
   it('should work', function (done) {
-    of(`<script type='application/ld+json'>
-                   {
-                     "@context": "https://schema.org/",
-                     "name": "Bar",
-                     "@graph": [{
-                        "name": "Bar"
-                      }]
-                   }
-                 </script>`)
+    of(`
+        <script type='application/ld+json'>
+          {
+            "@context": "https://schema.org/",
+            "name": "Bar",
+            "@graph": [{
+               "name": "Bar"
+             }]
+          }
+        </script>`)
       .pipe(
         $document,
         $jsonld,
@@ -54,19 +56,20 @@ describe('search', () => {
   })
 
   it('should use predicate', function (done) {
-    of(`<script type='application/ld+json'>
-                   {
-                     "@context": "https://schema.org/",
-                     "name": "Bar",
-                     "@graph": [{
-                        "@type": "Article",
-                        "name": "Bar"
-                      },{
-                        "@type": "WebPage",
-                        "name": "Bar"
-                      }]
-                   }
-                 </script>`)
+    of(`
+        <script type='application/ld+json'>
+          {
+            "@context": "https://schema.org/",
+            "name": "Bar",
+            "@graph": [{
+               "@type": "Article",
+               "name": "Bar"
+              },{
+                "@type": "WebPage",
+                "name": "Bar"
+              }]
+          }
+        </script>`)
       .pipe(
         $document,
         $jsonld,

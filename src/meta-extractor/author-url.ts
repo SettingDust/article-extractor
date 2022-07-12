@@ -25,34 +25,15 @@ export const extractors: { [key: string]: MetaExtractor<string> } = {
         : it.url['url'] ?? it.url.toString()
     )
   ),
-  'meta article': pipe(
-    $element.select.query('meta[property="article:author"]'),
-    $element.attribute('content')
+  'meta article': $element.attribute.content('meta[property="article:author"]'),
+  'itemprop url': $element.attribute.href(
+    '[itemprop*="author" i] [itemprop="url"][href]'
   ),
-  'itemprop url': pipe(
-    $element.select.query('[itemprop*="author" i] [itemprop="url"][href]'),
-    $element.attribute('href')
-  ),
-  itemprop: pipe(
-    $element.select.query('[itemprop*="author" i][href]'),
-    $element.attribute('href')
-  ),
-  rel: pipe(
-    $element.select.query('[rel="author"][href]'),
-    $element.attribute('href')
-  ),
-  'a class': pipe(
-    $element.select.query('a[class*="author" i][href]'),
-    $element.attribute('href')
-  ),
-  'class a': pipe(
-    $element.select.query('[class*="author" i] a[href]'),
-    $element.attribute('href')
-  ),
-  href: pipe(
-    $element.select.query('a[href*="/author/" i]'),
-    $element.attribute('href')
-  )
+  itemprop: $element.attribute.href('[itemprop*="author" i][href]'),
+  rel: $element.attribute.href('[rel="author"][href]'),
+  'a class': $element.attribute.href('a[class*="author" i][href]'),
+  'class a': $element.attribute.href('[class*="author" i] a[href]'),
+  href: $element.attribute.href('a[href*="/author/" i]')
 }
 
 export default (document: Observable<Document>) =>

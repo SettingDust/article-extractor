@@ -1,5 +1,6 @@
 import type { Config } from '@jest/types'
 
+// noinspection JSUnusedGlobalSymbols
 export default <Config.InitialOptions>{
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts'],

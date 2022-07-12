@@ -12,31 +12,15 @@ import memoized from 'nano-memoize'
 
 export const extractors: { [key: string]: MetaExtractor<string> } = {
   jsonld: pipe($jsonld, $jsonld.get('headline')),
-  'meta og': pipe(
-    $element.select.query('meta[property="og:title"]'),
-    $element.attribute('content')
+  'meta og': $element.attribute.content('meta[property="og:title"]'),
+  'meta twitter': $element.attribute.content('meta[property="twitter:title"]'),
+  'meta twitter attr name': $element.attribute.content(
+    'meta[name="twitter:title"]'
   ),
-  'meta twitter': pipe(
-    $element.select.query('meta[property="twitter:title"]'),
-    $element.attribute('content')
-  ),
-  'meta twitter attr name': pipe(
-    $element.select.query('meta[name="twitter:title"]'),
-    $element.attribute('content')
-  ),
-  'post title class': pipe(
-    $element.select.className('post-title'),
-    $element.text
-  ),
-  'entry title class': pipe(
-    $element.select.className('entry-title'),
-    $element.text
-  ),
-  'h1 h2 like title': pipe(
-    $element.select.query(':is(h1, h2)[class*="title" i]'),
-    $element.text
-  ),
-  title: pipe(pluck('title'))
+  'post title class': $element.text.className('post-title'),
+  'entry title class': $element.text.className('entry-title'),
+  'h1 h2 like title': $element.text.query(':is(h1, h2)[class*="title" i]'),
+  title: pluck('title')
 }
 
 const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(

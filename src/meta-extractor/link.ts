@@ -14,38 +14,16 @@ export const extractors: { [key: string]: MetaExtractor<string> } = {
     $jsonld,
     $jsonld.get('url', (it) => it['@type']?.endsWith('Page'))
   ),
-  'meta og': pipe(
-    $element.select.query('meta[property="og:url"]'),
-    $element.attribute('content')
+  'meta og': $element.attribute.content('meta[property="og:url"]'),
+  'meta twitter': $element.attribute.content('meta[property="twitter:url"]'),
+  'meta twitter attr name': $element.attribute.content(
+    'meta[name="twitter:url"]'
   ),
-  'meta twitter': pipe(
-    $element.select.query('meta[property="twitter:url"]'),
-    $element.attribute('content')
-  ),
-  'meta twitter attr name': pipe(
-    $element.select.query('meta[name="twitter:url"]'),
-    $element.attribute('content')
-  ),
-  'link canonical': pipe(
-    $element.select.query('link[rel="canonical"]'),
-    $element.attribute('href')
-  ),
-  'link alternate': pipe(
-    $element.select.query('link[rel="alternate"]'),
-    $element.attribute('href')
-  ),
-  'post title class': pipe(
-    $element.select.query('.post-title a'),
-    $element.attribute('href')
-  ),
-  'entry title class': pipe(
-    $element.select.query('.entry-title a'),
-    $element.attribute('href')
-  ),
-  'h1 h2 like title': pipe(
-    $element.select.query(':is(h1, h2)[class*="title" i] a'),
-    $element.attribute('href')
-  )
+  'link canonical': $element.attribute.href('link[rel="canonical"]'),
+  'link alternate': $element.attribute.href('link[rel="alternate"]'),
+  'post title class': $element.attribute.href('.post-title a'),
+  'entry title class': $element.attribute.href('.entry-title a'),
+  'h1 h2 like title': $element.attribute.href(':is(h1, h2)[class*="title" i] a')
 }
 
 export default (document: Observable<Document>) =>

@@ -5,9 +5,8 @@ import $element from './$element'
 
 const parse = pipe(
   $element.select.query('script[type="application/ld+json"]'),
-  map((it) => it as globalThis.HTMLScriptElement),
   pluck('innerText'),
-  map((it) => JSON.parse(it) as Graph)
+  map((it) => <Graph>JSON.parse(<string>it))
 )
 
 const get = <T>(

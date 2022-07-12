@@ -1892,6 +1892,7 @@ __metadata:
     "@types/node": ~16
     "@typescript-eslint/eslint-plugin": ^5.30.5
     "@typescript-eslint/parser": ^5.30.5
+    chrono-node: ^2.3.9
     condense-whitespace: ^3.0.0
     cross-env: ^7.0.3
     eslint: ^8.19.0
@@ -2170,6 +2171,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chrono-node@npm:^2.3.9":
+  version: 2.3.9
+  resolution: "chrono-node@npm:2.3.9"
+  dependencies:
+    dayjs: ^1.10.0
+  checksum: 2e895b43f632df59c07756a0d34b938f192a1e7fb545b13b4d9d677f2366ea06341a44e30a53a7b8764c35fd957f5312b73fd1cc5e03d18270cd5af5cb1a7aa5
+  languageName: node
+  linkType: hard
+
 "ci-info@npm:^3.2.0, ci-info@npm:^3.3.2":
   version: 3.3.2
   resolution: "ci-info@npm:3.3.2"
@@ -2350,6 +2360,13 @@ __metadata:
   version: 0.5.0
   resolution: "cssom@npm:0.5.0"
   checksum: 823471aa30091c59e0a305927c30e7768939b6af70405808f8d2ce1ca778cddcb24722717392438329d1691f9a87cb0183b64b8d779b56a961546d54854fde01
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:^1.10.0":
+  version: 1.11.3
+  resolution: "dayjs@npm:1.11.3"
+  checksum: c87e06b562a51ae6568cc5b840c7579d82a0f8af7163128c858fe512d3d71d07bd8e8e464b8cc41b8698a9e26b80ab2c082d14a1cd4c33df5692d77ccdfc5a43
   languageName: node
   linkType: hard
 

@@ -24,26 +24,16 @@ export const extractors: { [key: string]: MetaExtractor<string> } = {
         : it.name['name'] ?? it.name.toString()
     )
   ),
-  meta: pipe(
-    $element.select.query('meta[name="author"]'),
-    $element.attribute('content')
+  meta: pipe($element.attribute.content('meta[name="author"]')),
+  'itemprop name': $element.text.query(
+    '[itemprop*="author" i] [itemprop="name"]'
   ),
-  'itemprop name': pipe(
-    $element.select.query('[itemprop*="author" i] [itemprop="name"]'),
-    $element.text
-  ),
-  itemprop: pipe(
-    $element.select.query('[itemprop*="author" i]'),
-    $element.text
-  ),
-  rel: pipe($element.select.query('[rel="author"]'), $element.text),
-  'a class': pipe($element.select.query('a[class*="author" i]'), $element.text),
-  'class a': pipe(
-    $element.select.query('[class*="author" i] a'),
-    $element.text
-  ),
-  href: pipe($element.select.query('a[href*="/author/" i]'), $element.text),
-  class: pipe($element.select.query('[class*="author" i]'), $element.text)
+  itemprop: pipe($element.text.query('[itemprop*="author" i]')),
+  rel: pipe($element.text.query('[rel="author"]')),
+  'a class': pipe($element.text.query('a[class*="author" i]')),
+  'class a': pipe($element.text.query('[class*="author" i] a')),
+  href: pipe($element.text.query('a[href*="/author/" i]')),
+  class: pipe($element.text.query('[class*="author" i]'))
 }
 
 export default (document: Observable<Document>) =>
