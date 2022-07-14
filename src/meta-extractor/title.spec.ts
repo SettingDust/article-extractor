@@ -95,7 +95,7 @@ describe('extractors', () => {
   })
 
   it('should with correct priority', function (done) {
-    from(['./test/generic-titles.html'])
+    from(['./test/meta-test.html'])
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),
         $title,

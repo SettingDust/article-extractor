@@ -26,13 +26,13 @@ export const extractors: {
       graph.pipe($jsonld.get<string>('uploadDate'))
     )
   },
-  'meta published': $element.attribute.content(
+  'meta updated': $element.attribute.content(
     'meta[property*="updated_time" i]'
   ),
-  'meta release': $element.attribute.content(
+  'meta modified': $element.attribute.content(
     'meta[property*="modified_time" i]'
   ),
-  'itemprop published': $element.attribute.content(
+  'itemprop modified': $element.attribute.content(
     '[itemprop*="datemodified" i]'
   )
 }

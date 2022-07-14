@@ -22,7 +22,7 @@ const $url = pipe(
 
 describe('extractors', () => {
   it('should read name correctly', function (done) {
-    of('./test/generic-authors.html')
+    of('./test/meta-test.html')
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),
         $author,
@@ -30,7 +30,6 @@ describe('extractors', () => {
         zipAll(),
         $expect.equals([
           'jsonld',
-          'jsonld-article',
           'jsonld-object',
           'meta',
           'itemprop name',
@@ -46,7 +45,7 @@ describe('extractors', () => {
   })
 
   it('should read url correctly', function (done) {
-    of('./test/generic-authors.html')
+    of('./test/meta-test.html')
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),
         $url,

@@ -88,7 +88,7 @@ describe('extractors', () => {
   })
 
   it('should read correctly', function (done) {
-    from(['./test/generic-links.html'])
+    from(['./test/meta-test.html'])
       .pipe(
         switchMap((it) => readFile(it, { encoding: 'utf8' })),
         $link,
@@ -103,7 +103,6 @@ describe('extractors', () => {
           'https://alternate.com',
           'https://post-title.com',
           'https://entry-title.com',
-          'https://class-title.com',
           'https://a-title.com'
         ])
       )
