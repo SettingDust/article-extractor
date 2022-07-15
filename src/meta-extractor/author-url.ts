@@ -1,16 +1,15 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-author/index.js
 
-import { MetaExtractor } from '.'
 import { distinct, Observable, pipe } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Organization, Person } from 'schema-dts'
-import { $operators } from './utils'
+import { $operators, Extractors } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $string from '../utils/$string'
 import $url from '../utils/$url'
 
-export const extractors: { [key: string]: MetaExtractor<string> } = {
+export const extractors = new Extractors({
   jsonld: pipe(
     $jsonld,
     $jsonld.get<Person | Organization>(
@@ -34,7 +33,7 @@ export const extractors: { [key: string]: MetaExtractor<string> } = {
   'a class': $element.attribute.href('a[class*="author" i][href]'),
   'class a': $element.attribute.href('[class*="author" i] a[href]'),
   href: $element.attribute.href('a[href*="/author/" i]')
-}
+})
 
 export default (document: Observable<Document>) =>
   document.pipe(

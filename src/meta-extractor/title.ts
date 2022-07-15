@@ -1,16 +1,15 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-title/index.js
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
-import { MetaExtractor } from '.'
 import { distinct, mergeMap, Observable, pipe, pluck } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { $operators } from './utils'
+import { $operators, Extractors } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $string from '../utils/$string'
 import memoized from 'nano-memoize'
 
-export const extractors: { [key: string]: MetaExtractor<string> } = {
+export const extractors = new Extractors({
   jsonld: pipe($jsonld, $jsonld.get('headline')),
   'meta og': $element.attribute.content('meta[property="og:title"]'),
   'meta twitter': $element.attribute.content('meta[property="twitter:title"]'),
@@ -21,7 +20,7 @@ export const extractors: { [key: string]: MetaExtractor<string> } = {
   'entry title class': $element.text.className('entry-title'),
   'h1 h2 like title': $element.text.query(':is(h1, h2)[class*="title" i]'),
   title: pluck('title')
-}
+})
 
 const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `

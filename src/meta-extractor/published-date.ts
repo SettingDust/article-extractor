@@ -1,6 +1,5 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-date/index.js
 
-import { MetaExtractor } from '.'
 import {
   defaultIfEmpty,
   distinct,
@@ -11,14 +10,12 @@ import {
   switchMap
 } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { $operators } from './utils'
+import { $operators, Extractors } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $date from '../utils/$date'
 
-export const extractors: {
-  [key: string]: MetaExtractor<Date | string | number>
-} = {
+export const extractors = new Extractors<Date | string | number>({
   jsonld: (it) => {
     const graph = it.pipe($jsonld)
     // ISO 8601
@@ -67,7 +64,7 @@ export const extractors: {
   'class post meta': pipe($element.text.query('[class*="post-meta" i]'), $date),
   'id time': pipe($element.text.query('[id*="time" i]'), $date),
   'class time': pipe($element.text.query('[class*="time" i]'), $date)
-}
+})
 
 export default (document: Observable<Document>) =>
   document.pipe(
