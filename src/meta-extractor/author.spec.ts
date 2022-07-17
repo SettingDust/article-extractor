@@ -11,13 +11,13 @@ import $expect from '../utils/test/$expect'
 const $author = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(author, pluck('author', 'name')))
+  switchMap((it) => it.pipe(author.operators, pluck('author', 'name')))
 )
 
 const $url = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(authorUrl, pluck('author', 'url')))
+  switchMap((it) => it.pipe(authorUrl.operators, pluck('author', 'url')))
 )
 
 describe('extractors', () => {

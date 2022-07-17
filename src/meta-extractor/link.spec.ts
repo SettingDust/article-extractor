@@ -10,7 +10,7 @@ import $expect from '../utils/test/$expect'
 const $link = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(link, pluck('link')))
+  switchMap((it) => it.pipe(link.operators, pluck('link')))
 )
 
 const $singleLink = pipe(

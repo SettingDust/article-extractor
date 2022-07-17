@@ -10,7 +10,7 @@ import $expect from '../utils/test/$expect'
 const $title = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(title, pluck('title')))
+  switchMap((it) => it.pipe(title.operators, pluck('title')))
 )
 
 const $singleTitle = pipe(

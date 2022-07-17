@@ -1,16 +1,18 @@
 import {
+  first,
   from,
   map,
   Observable,
   ObservableInput,
   of,
+  OperatorFunction,
   pipe,
+  pluck,
   switchMap
 } from 'rxjs'
-import { MetaExtractor } from '.'
 import memoized from 'nano-memoize'
 
-export const $operators = memoized(<T>(extractors: Extractors<T>) =>
+export const $operators = memoized(<T>(extractors: ExtractOperators<T>) =>
   pipe(
     map<Document, Observable<Document>>((it) => of(it)),
     switchMap<Observable<Document>, ObservableInput<T>>((document) =>
@@ -22,12 +24,23 @@ export const $operators = memoized(<T>(extractors: Extractors<T>) =>
   )
 )
 
-export class Extractors<T> extends Array<[string, MetaExtractor<T>]> {
-  constructor(items: { [key: string]: MetaExtractor<T> }) {
+export type ExtractOperator<T> = OperatorFunction<Document, T>
+
+export class Extractor<T, U> {
+  operators: ExtractOperators<T>
+  extract: OperatorFunction<Document, U>
+  picker: OperatorFunction<[source: U, url: string], U> = pipe(
+    first(),
+    pluck(0)
+  )
+}
+
+export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
+  constructor(items: { [key: string]: ExtractOperator<T> }) {
     super(...Object.entries(items))
   }
 
-  push(...items: [key: string, extractor: MetaExtractor<T>][]) {
+  push(...items: [key: string, extractor: ExtractOperator<T>][]) {
     const keys = new Set<string>()
     let index = this.length
     while (index--) {
@@ -41,7 +54,7 @@ export class Extractors<T> extends Array<[string, MetaExtractor<T>]> {
 
   set(
     key: string,
-    extractor: MetaExtractor<T>,
+    extractor: ExtractOperator<T>,
     index: number = this.findIndex(([it]) => it === key)
   ) {
     this.removeIf(([it]) => it === key)
@@ -52,7 +65,7 @@ export class Extractors<T> extends Array<[string, MetaExtractor<T>]> {
   get = (key: string) => this.find(([it]) => it === key)
 
   private removeIf(
-    callback: (value: [string, MetaExtractor<T>], index: number) => boolean
+    callback: (value: [string, ExtractOperator<T>], index: number) => boolean
   ) {
     let index = this.length
     while (index--) if (callback(this[index], index)) this.splice(index, 1)

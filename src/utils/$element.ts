@@ -4,8 +4,9 @@ import memoized from 'nano-memoize'
 import { filter, map, switchMap } from 'rxjs/operators'
 
 const select = Object.assign(
-  (function_: (document: Document) => ObservableInput<Element>) =>
-    memoized(switchMap<Document, ObservableInput<Element>>(function_)),
+  memoized((function_: (document: Document) => ObservableInput<Element>) =>
+    switchMap<Document, ObservableInput<Element>>(function_)
+  ),
   {
     query: (selector: string) => select((it) => it.querySelectorAll(selector)),
     className: (name: string) =>
