@@ -1,7 +1,7 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-title/index.js
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
-import { distinct, mergeMap, pipe, pluck, reduce } from 'rxjs'
+import { distinct, mergeMap, OperatorFunction, pipe, pluck, reduce } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { $operators, ExtractOperators, Extractor } from './utils'
 import $jsonld from '../utils/$jsonld'
@@ -14,8 +14,8 @@ const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `
 )
 
-export default class extends Extractor<string, { title: string }> {
-  operators = new ExtractOperators({
+export default new (class implements Extractor<string, { title: string }> {
+  operators = new ExtractOperators<string>({
     jsonld: pipe($jsonld, $jsonld.get('headline')),
     'meta og': $element.attribute.content('meta[property="og:title"]'),
     'meta twitter': $element.attribute.content(
@@ -29,7 +29,7 @@ export default class extends Extractor<string, { title: string }> {
     'h1 h2 like title': $element.text.query(':is(h1, h2)[class*="title" i]'),
     title: pluck('title')
   })
-  extract = pipe(
+  extract: OperatorFunction<Document, { title: string }> = pipe(
     $operators(this.operators),
     $string.validate,
     $string.notBlank,
@@ -65,4 +65,4 @@ export default class extends Extractor<string, { title: string }> {
       title: closest(url, source)
     }))
   )
-}
+})()

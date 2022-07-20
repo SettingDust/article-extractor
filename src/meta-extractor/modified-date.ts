@@ -2,12 +2,12 @@
 
 import { defaultIfEmpty, distinct, merge, of, pipe, switchMap } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { $operators, ExtractOperators, Extractor } from './utils'
+import { $operators, ExtractOperators, SequentialExtractor } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $date from '../utils/$date'
 
-export default class extends Extractor<
+export default new (class extends SequentialExtractor<
   Date | string | number,
   { date: { modified: Date } }
 > {
@@ -43,4 +43,4 @@ export default class extends Extractor<
     distinct(),
     map((date) => ({ date: { modified: date } }))
   )
-}
+})()

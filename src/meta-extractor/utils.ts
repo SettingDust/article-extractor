@@ -26,9 +26,15 @@ export const $operators = memoized(<T>(extractors: ExtractOperators<T>) =>
 
 export type ExtractOperator<T> = OperatorFunction<Document, T>
 
-export class Extractor<T, U> {
+export interface Extractor<T, U> {
   operators: ExtractOperators<T>
   extract: OperatorFunction<Document, U>
+  picker: OperatorFunction<[source: U, url: string], U>
+}
+
+export abstract class SequentialExtractor<T, U> implements Extractor<T, U> {
+  abstract extract: OperatorFunction<Document, U>
+  abstract operators: ExtractOperators<T>
   picker: OperatorFunction<[source: U, url: string], U> = pipe(
     first(),
     pluck(0)

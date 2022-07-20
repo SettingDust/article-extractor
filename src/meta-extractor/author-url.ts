@@ -3,13 +3,16 @@
 import { distinct, pipe } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Organization, Person } from 'schema-dts'
-import { $operators, ExtractOperators, Extractor } from './utils'
+import { $operators, ExtractOperators, SequentialExtractor } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $string from '../utils/$string'
 import $url from '../utils/$url'
 
-export default class extends Extractor<string, { author: { url: string } }> {
+export default new (class extends SequentialExtractor<
+  string,
+  { author: { url: string } }
+> {
   operators = new ExtractOperators({
     jsonld: pipe(
       $jsonld,
@@ -46,4 +49,4 @@ export default class extends Extractor<string, { author: { url: string } }> {
     distinct(),
     map((url) => ({ author: { url } }))
   )
-}
+})()

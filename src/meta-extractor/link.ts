@@ -1,6 +1,6 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-url/index.js
 
-import { $operators, ExtractOperators, Extractor } from './utils'
+import { $operators, ExtractOperators, SequentialExtractor } from './utils'
 import { distinct, pipe } from 'rxjs'
 import { map } from 'rxjs/operators'
 import $jsonld from '../utils/$jsonld'
@@ -8,7 +8,10 @@ import $element from '../utils/$element'
 import $string from '../utils/$string'
 import $url from '../utils/$url'
 
-export default class extends Extractor<string, { link: string }> {
+export default new (class extends SequentialExtractor<
+  string,
+  { link: string }
+> {
   operators = new ExtractOperators({
     jsonld: pipe(
       $jsonld,
@@ -36,4 +39,4 @@ export default class extends Extractor<string, { link: string }> {
     distinct(),
     map((link) => ({ link }))
   )
-}
+})()
