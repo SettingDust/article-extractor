@@ -39,8 +39,8 @@ export default new (class extends SequentialExtractor<
     class: pipe($element.text.query('[class*="author" i]'))
   })
 
-  extract = pipe(
-    $operators(this.operators),
+  extractor = pipe(
+    $operators(() => this.operators),
     $string.validate,
     $string.notBlank,
     $string.condense,

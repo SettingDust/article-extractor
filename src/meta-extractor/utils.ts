@@ -7,16 +7,15 @@ import {
   of,
   OperatorFunction,
   pipe,
-  pluck,
   switchMap
 } from 'rxjs'
 import memoized from 'nano-memoize'
 
-export const $operators = memoized(<T>(extractors: ExtractOperators<T>) =>
+export const $operators = memoized(<T>(extractors: () => ExtractOperators<T>) =>
   pipe(
     map<Document, Observable<Document>>((it) => of(it)),
     switchMap<Observable<Document>, ObservableInput<T>>((document) =>
-      from(extractors).pipe(
+      from(extractors()).pipe(
         map((it) => it[1]),
         switchMap((it) => it(document))
       )
@@ -28,16 +27,16 @@ export type ExtractOperator<T> = OperatorFunction<Document, T>
 
 export interface Extractor<T, U> {
   operators: ExtractOperators<T>
-  extract: OperatorFunction<Document, U>
-  picker: OperatorFunction<[source: U, url: string], U>
+  extractor: OperatorFunction<Document, U>
+  picker: OperatorFunction<{ source: U; title: string }, U>
 }
 
 export abstract class SequentialExtractor<T, U> implements Extractor<T, U> {
-  abstract extract: OperatorFunction<Document, U>
+  abstract extractor: OperatorFunction<Document, U>
   abstract operators: ExtractOperators<T>
-  picker: OperatorFunction<[source: U, url: string], U> = pipe(
+  picker: OperatorFunction<{ source: U; title: string }, U> = pipe(
     first(),
-    pluck(0)
+    map(({ source }) => source)
   )
 }
 
@@ -64,7 +63,8 @@ export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
     index: number = this.findIndex(([it]) => it === key)
   ) {
     this.removeIf(([it]) => it === key)
-    this.splice(index, 0, [key, extractor])
+    if (index === -1) this.push([key, extractor])
+    else this.splice(index, 0, [key, extractor])
     return this
   }
 

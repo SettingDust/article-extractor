@@ -1,6 +1,6 @@
 // noinspection NsUnresolvedStyleClassReference
 
-import { from, of, pipe, pluck, switchMap, zipAll } from 'rxjs'
+import { from, of, pipe, switchMap, zipAll } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import link from './link'
@@ -10,7 +10,12 @@ import $expect from '../utils/test/$expect'
 const $link = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(link.operators, pluck('link')))
+  switchMap((it) =>
+    it.pipe(
+      link.extractor,
+      map((it) => it.link)
+    )
+  )
 )
 
 const $singleLink = pipe(

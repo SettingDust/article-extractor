@@ -1,7 +1,7 @@
 // noinspection NsUnresolvedStyleClassReference
 
 import title from './title'
-import { from, of, pipe, pluck, switchMap, windowCount, zipAll } from 'rxjs'
+import { from, of, pipe, switchMap, windowCount, zipAll } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import $document from '../utils/$document'
@@ -10,7 +10,12 @@ import $expect from '../utils/test/$expect'
 const $title = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(title.operators, pluck('title')))
+  switchMap((it) =>
+    it.pipe(
+      title.extractor,
+      map((it) => it.title)
+    )
+  )
 )
 
 const $singleTitle = pipe(

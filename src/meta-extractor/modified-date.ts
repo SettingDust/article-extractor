@@ -31,8 +31,8 @@ export default new (class extends SequentialExtractor<
     )
   })
 
-  extract = pipe(
-    $operators(this.operators),
+  extractor = pipe(
+    $operators(() => this.operators),
     switchMap((it) =>
       of(it).pipe(
         filter((it): it is string | number => !(it instanceof Date)),

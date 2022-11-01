@@ -65,8 +65,8 @@ export default new (class extends SequentialExtractor<
     'class time': pipe($element.text.query('[class*="time" i]'), $date)
   })
 
-  extract = pipe(
-    $operators(this.operators),
+  extractor = pipe(
+    $operators(() => this.operators),
     switchMap((it) =>
       of(it).pipe(
         filter((it): it is string | number => !(it instanceof Date)),

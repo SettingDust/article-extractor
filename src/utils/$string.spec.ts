@@ -20,7 +20,7 @@ describe('validate', () => {
 })
 
 describe('notBlank', () => {
-  it('should accept string', function (done) {
+  it('should working', function (done) {
     combineLatest([
       of('foo').pipe($string.notBlank, $expect.truthy),
       of('  ').pipe($string.notBlank).pipe(defaultIfEmpty(false), $expect.falsy)
@@ -29,9 +29,24 @@ describe('notBlank', () => {
 })
 
 describe('trim', () => {
-  it('should accept string', function (done) {
+  it('should working', function (done) {
     of('  foo  ')
       .pipe($string.trim, $expect.be('foo'))
+      .subscribe(() => done())
+  })
+})
+
+describe('closest', () => {
+  it('should working', function (done) {
+    of({ source: 'foo', target: 'fo1' }, { source: 'foo', target: 'bar' })
+      .pipe(
+        $string.closest,
+        $expect.equals({
+          result: 'fo1',
+          distance: 1,
+          source: 'foo'
+        })
+      )
       .subscribe(() => done())
   })
 })

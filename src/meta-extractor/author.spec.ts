@@ -1,6 +1,4 @@
-// noinspection NsUnresolvedStyleClassReference
-
-import { of, pipe, pluck, switchMap, zipAll } from 'rxjs'
+import { of, pipe, switchMap, zipAll } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import author from './author'
@@ -11,13 +9,23 @@ import $expect from '../utils/test/$expect'
 const $author = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(author.operators, pluck('author', 'name')))
+  switchMap((it) =>
+    it.pipe(
+      author.extractor,
+      map((it) => it?.author?.name)
+    )
+  )
 )
 
 const $url = pipe(
   $document,
   map((it) => of(it)),
-  switchMap((it) => it.pipe(authorUrl.operators, pluck('author', 'url')))
+  switchMap((it) =>
+    it.pipe(
+      authorUrl.extractor,
+      map((it) => it?.author?.url)
+    )
+  )
 )
 
 describe('extractors', () => {

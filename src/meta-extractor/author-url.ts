@@ -41,8 +41,8 @@ export default new (class extends SequentialExtractor<
     href: $element.attribute.href('a[href*="/author/" i]')
   })
 
-  extract = pipe(
-    $operators(this.operators),
+  extractor = pipe(
+    $operators(() => this.operators),
     $string.validate,
     $string.trim,
     $url.validate,
