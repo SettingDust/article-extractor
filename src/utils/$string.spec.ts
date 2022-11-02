@@ -1,11 +1,14 @@
-import { combineLatest, defaultIfEmpty, of } from 'rxjs'
+import { combineLatest, defaultIfEmpty, of, tap } from 'rxjs'
 import $string from './$string'
-import $expect from './test/$expect'
+import { expect } from 'chai'
 
 describe('condense', () => {
   it('should remove extra spaces', function (done) {
     of('   a   b   ')
-      .pipe($string.condense, $expect.be('a b'))
+      .pipe(
+        $string.condense,
+        tap((it) => expect(it).be.equals('a b'))
+      )
       .subscribe(() => done())
   })
 })
@@ -13,8 +16,16 @@ describe('condense', () => {
 describe('validate', () => {
   it('should accept string', function (done) {
     combineLatest([
-      of('foo').pipe($string.validate, $expect.truthy),
-      of(123).pipe($string.validate).pipe(defaultIfEmpty(false), $expect.falsy)
+      of('foo').pipe(
+        $string.validate,
+        tap((it) => expect(it).be.true)
+      ),
+      of(123)
+        .pipe($string.validate)
+        .pipe(
+          defaultIfEmpty(false),
+          tap((it) => expect(it).be.false)
+        )
     ]).subscribe(() => done())
   })
 })
@@ -22,8 +33,16 @@ describe('validate', () => {
 describe('notBlank', () => {
   it('should working', function (done) {
     combineLatest([
-      of('foo').pipe($string.notBlank, $expect.truthy),
-      of('  ').pipe($string.notBlank).pipe(defaultIfEmpty(false), $expect.falsy)
+      of('foo').pipe(
+        $string.notBlank,
+        tap((it) => expect(it).be.true)
+      ),
+      of('  ')
+        .pipe($string.notBlank)
+        .pipe(
+          defaultIfEmpty(false),
+          tap((it) => expect(it).be.false)
+        )
     ]).subscribe(() => done())
   })
 })
@@ -31,7 +50,10 @@ describe('notBlank', () => {
 describe('trim', () => {
   it('should working', function (done) {
     of('  foo  ')
-      .pipe($string.trim, $expect.be('foo'))
+      .pipe(
+        $string.trim,
+        tap((it) => expect(it).be.equals('foo'))
+      )
       .subscribe(() => done())
   })
 })
@@ -41,11 +63,13 @@ describe('closest', () => {
     of({ source: 'foo', target: 'fo1' }, { source: 'foo', target: 'bar' })
       .pipe(
         $string.closest,
-        $expect.equals({
-          result: 'fo1',
-          distance: 1,
-          source: 'foo'
-        })
+        tap((it) =>
+          expect(it).equals({
+            result: 'fo1',
+            distance: 1,
+            source: 'foo'
+          })
+        )
       )
       .subscribe(() => done())
   })

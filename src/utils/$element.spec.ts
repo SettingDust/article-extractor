@@ -1,10 +1,10 @@
 // noinspection NsUnresolvedStyleClassReference,HtmlUnknownAttribute
 
-import { from, of, pluck, zipAll } from 'rxjs'
+import { count, from, of, tap } from 'rxjs'
 import { map } from 'rxjs/operators'
 import $document from './$document'
 import $element from './$element'
-import $expect from './test/$expect'
+import { expect } from 'chai'
 
 describe('select', () => {
   describe('query', () => {
@@ -18,11 +18,10 @@ describe('select', () => {
         .pipe(
           $document,
           $element.select.query('#foo, .foo, [name="foo"], h2'),
-          pluck('textContent'),
-          $expect.be('bar'),
-          map((it) => of(it)),
-          zipAll(),
-          $expect.length(4)
+          map((it) => it.textContent),
+          tap((it) => expect(it).be.equals('bar')),
+          count(),
+          tap((it) => expect(it).equals(4))
         )
         .subscribe(() => done())
     })
@@ -33,8 +32,8 @@ describe('select', () => {
         .pipe(
           $document,
           $element.select.className('foo'),
-          pluck('textContent'),
-          $expect.be('bar')
+          map((it) => it.textContent),
+          tap((it) => expect(it).be.equals('bar'))
         )
         .subscribe(() => done())
     })
@@ -45,8 +44,8 @@ describe('select', () => {
         .pipe(
           $document,
           $element.select.id('foo'),
-          pluck('textContent'),
-          $expect.be('bar')
+          map((it) => it.textContent),
+          tap((it) => expect(it).be.equals('bar'))
         )
         .subscribe(() => done())
     })
@@ -57,8 +56,8 @@ describe('select', () => {
         .pipe(
           $document,
           $element.select.tag('h1'),
-          pluck('textContent'),
-          $expect.be('bar')
+          map((it) => it.textContent),
+          tap((it) => expect(it).be.equals('bar'))
         )
         .subscribe(() => done())
     })
@@ -72,7 +71,7 @@ describe('attribute', () => {
         $document,
         $element.select.id('foo'),
         $element.attribute('name'),
-        $expect.be('bar')
+        tap((it) => expect(it).be.equals('bar'))
       )
       .subscribe(() => done())
   })
@@ -85,10 +84,9 @@ describe('text', () => {
         $document,
         $element.select.id('foo'),
         $element.text,
-        $expect.be('bar'),
-        map((it) => of(it)),
-        zipAll(),
-        $expect.length(2)
+        tap((it) => expect(it).be.equals('bar')),
+        count(),
+        tap((it) => expect(it).equals(2))
       )
       .subscribe(() => done())
   })

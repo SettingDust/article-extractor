@@ -1,11 +1,11 @@
 // noinspection NsUnresolvedStyleClassReference
 
 import title from './title'
-import { from, of, pipe, switchMap, windowCount, zipAll } from 'rxjs'
+import { from, of, pipe, switchMap, tap, windowCount, zipAll } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import $document from '../utils/$document'
-import $expect from '../utils/test/$expect'
+import { expect } from 'chai'
 
 const $title = pipe(
   $document,
@@ -20,15 +20,18 @@ const $title = pipe(
 
 const $singleTitle = pipe(
   $title,
-  $expect.be('foo'),
+  tap((it) => expect(it).be.equals('foo')),
   map((it) => of(it)),
   zipAll()
 )
 
-describe('extractors', () => {
+describe('TitleExtractor', () => {
   it('should read meta og title', function (done) {
     of('<meta property="og:title" content="foo">')
-      .pipe($singleTitle, $expect.length(1))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(1))
+      )
       .subscribe(() => done())
   })
 
@@ -37,7 +40,10 @@ describe('extractors', () => {
       '<meta property="twitter:title" content="foo">',
       '<meta name="twitter:title" content="foo">'
     ])
-      .pipe($singleTitle, $expect.length(2))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(2))
+      )
       .subscribe(() => done())
   })
 
@@ -57,25 +63,37 @@ describe('extractors', () => {
          }
        </script>`
     ])
-      .pipe($singleTitle, $expect.length(2))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(2))
+      )
       .subscribe(() => done())
   })
 
   it('should read title tag', function (done) {
     of('<html lang=""><head><title>foo</title></head></html>')
-      .pipe($singleTitle, $expect.length(1))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(1))
+      )
       .subscribe(() => done())
   })
 
   it('should read post title class', function (done) {
     of('<div class="post-title">foo</div>')
-      .pipe($singleTitle, $expect.length(1))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(1))
+      )
       .subscribe(() => done())
   })
 
   it('should read entry title class', function (done) {
     of('<div class="entry-title">foo</div>')
-      .pipe($singleTitle, $expect.length(1))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(1))
+      )
       .subscribe(() => done())
   })
 
@@ -85,7 +103,10 @@ describe('extractors', () => {
       '<h1 class="like-title"><a>foo</a></h1>',
       '<h2 class="like-title"><a>foo</a></h2>'
     ])
-      .pipe($singleTitle, $expect.length(3))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(3))
+      )
       .subscribe(() => done())
   })
 
@@ -95,7 +116,10 @@ describe('extractors', () => {
       '<h1 class="like-title">foo</h1>',
       '<h2 class="like-title">foo</h2>'
     ])
-      .pipe($singleTitle, $expect.length(3))
+      .pipe(
+        $singleTitle,
+        tap((it) => expect(it).has.lengthOf(3))
+      )
       .subscribe(() => done())
   })
 
@@ -106,17 +130,19 @@ describe('extractors', () => {
         $title,
         map((it) => of(it)),
         zipAll(),
-        $expect.equals([
-          'jsonld',
-          'og',
-          'twitter',
-          'twitter-name',
-          'post-title',
-          'entry-title',
-          'class-title',
-          'a-title',
-          'title-tag'
-        ])
+        tap((it) =>
+          expect(it).deep.equals([
+            'jsonld',
+            'og',
+            'twitter',
+            'twitter-name',
+            'post-title',
+            'entry-title',
+            'class-title',
+            'a-title',
+            'title-tag'
+          ])
+        )
       )
       .subscribe(() => done())
   })
@@ -139,9 +165,9 @@ describe('extractors', () => {
           it.pipe(
             map((it) => of(it)),
             zipAll(),
-            $expect.length(3),
+            tap((it) => expect(it).has.lengthOf(3)),
             map((it) => it.slice(1)),
-            $expect.equals(['foo', 'bar'])
+            tap((it) => expect(it).deep.equals(['foo', 'bar']))
           )
         ),
         map((it) => of(it)),
@@ -163,8 +189,10 @@ describe('extractors', () => {
     ])
       .pipe(
         switchMap((it) => $title(of(it))),
-        $expect.not.be('foo'),
-        $expect.not.be('bar'),
+        tap((it) => {
+          expect(it).not.be.equals('foo')
+          expect(it).not.be.equals('bar')
+        }),
         map((it) => of(it)),
         zipAll()
       )
@@ -175,7 +203,7 @@ describe('extractors', () => {
     of('<meta property="og:title" content="  foo    bar  ">')
       .pipe(
         switchMap((it) => $title(of(it))),
-        $expect.be('foo bar'),
+        tap((it) => expect(it).be.equals('foo bar')),
         map((it) => of(it)),
         zipAll()
       )

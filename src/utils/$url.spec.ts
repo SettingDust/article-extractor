@@ -1,13 +1,24 @@
-import { combineLatest, defaultIfEmpty, of } from 'rxjs'
+import { combineLatest, defaultIfEmpty, of, tap } from 'rxjs'
 import $url from './$url'
-import $expect from './test/$expect'
+import { expect } from 'chai'
 
 describe('validate', () => {
   it('should accept string', function (done) {
     combineLatest([
-      of('ftp://foo.bar').pipe($url.validate, $expect.truthy),
-      of('https://foo.bar').pipe($url.validate, $expect.truthy),
-      of(123).pipe($url.validate).pipe(defaultIfEmpty(false), $expect.falsy)
+      of('ftp://foo.bar').pipe(
+        $url.validate,
+        tap((it) => expect(it).be.true)
+      ),
+      of('https://foo.bar').pipe(
+        $url.validate,
+        tap((it) => expect(it).be.false)
+      ),
+      of(123)
+        .pipe($url.validate)
+        .pipe(
+          defaultIfEmpty(false),
+          tap((it) => expect(it).be.false)
+        )
     ]).subscribe(() => done())
   })
 })

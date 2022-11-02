@@ -1,0 +1,5 @@
+{
+  "spec": "src/**/*.spec.ts",
+  "loader": "ts-swc-loaders",
+  "extension": ["ts"]
+}

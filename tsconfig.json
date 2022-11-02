@@ -5,8 +5,12 @@
     "esModuleInterop": true,
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
     "types": [
-      "jest"
+      "mocha"
     ]
+  },
+  "ts-node": {
+    "swc": true
   }
 }

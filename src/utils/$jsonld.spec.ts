@@ -1,7 +1,7 @@
-import { of, tap, zipAll } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { count, of, tap } from 'rxjs'
 import $document from './$document'
 import $jsonld from './$jsonld'
+import { expect } from 'chai'
 
 describe('parse', () => {
   it('should parse element', function (done) {
@@ -19,7 +19,7 @@ describe('parse', () => {
         $document,
         $jsonld,
         tap((it) =>
-          expect(it).toEqual({
+          expect(it).equals({
             '@context': 'https://schema.org/',
             '@id': 'https://foo.com',
             '@type': 'Example',
@@ -47,10 +47,9 @@ describe('search', () => {
         $document,
         $jsonld,
         $jsonld.get<string>('name'),
-        tap((it) => expect(it).toBe('Bar')),
-        map((it) => of(it)),
-        zipAll(),
-        tap((it) => expect(it).toHaveLength(2))
+        tap((it) => expect(it).be.equals('Bar')),
+        count(),
+        tap((it) => expect(it).equals(2))
       )
       .subscribe(() => done())
   })
@@ -74,10 +73,9 @@ describe('search', () => {
         $document,
         $jsonld,
         $jsonld.get<string>('name', (it) => it['@type'] === 'Article'),
-        tap((it) => expect(it).toBe('Bar')),
-        map((it) => of(it)),
-        zipAll(),
-        tap((it) => expect(it).toHaveLength(2))
+        tap((it) => expect(it).be.equals('Bar')),
+        count(),
+        tap((it) => expect(it).equals(2))
       )
       .subscribe(() => done())
   })
