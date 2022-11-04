@@ -1,0 +1,11 @@
+{
+  "src": [
+    "src"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "extensions": [
+    "ts"
+  ]
+}

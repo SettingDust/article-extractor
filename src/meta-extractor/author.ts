@@ -4,7 +4,7 @@ import { distinct, pipe } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Organization, Person } from 'schema-dts'
 import { $operators, ExtractOperators, SequentialExtractor } from './utils'
-import $jsonld from '../utils/$jsonld'
+import jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $string from '../utils/$string'
 
@@ -14,8 +14,8 @@ export default new (class extends SequentialExtractor<
 > {
   operators = new ExtractOperators({
     jsonld: pipe(
-      $jsonld,
-      $jsonld.get<Person | Organization>(
+      jsonld,
+      jsonld.get<Person | Organization>(
         'author',
         (it) => !it['@type'].endsWith('Rating')
       ),

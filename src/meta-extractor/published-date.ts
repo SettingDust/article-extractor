@@ -1,17 +1,18 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-date/index.js
 
-import { defaultIfEmpty, distinct, merge, of, pipe, switchMap } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
+import { distinct, merge, pipe } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { $operators, ExtractOperators, SequentialExtractor } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $date from '../utils/$date'
+import isDigitString from '@stdlib/assert-is-digit-string'
 
 export default new (class extends SequentialExtractor<
-  Date | string | number,
+  string,
   { date: { published: Date } }
 > {
-  operators = new ExtractOperators<Date | string | number>({
+  operators = new ExtractOperators<string>({
     jsonld: (it) => {
       const graph = it.pipe($jsonld)
       // ISO 8601
@@ -42,38 +43,30 @@ export default new (class extends SequentialExtractor<
     'jsonld upload': pipe($jsonld, $jsonld.get('uploadDate')),
     'meta date': $element.attribute.content('meta[property="date" i]'),
     'time itemprop': $element.attribute.datetime('time[itemprop*="date" i]'),
-    time: pipe($element.attribute.datetime('time[datetime]'), $date),
-    itemprop: pipe($element.attribute.content('[itemprop*="date" i]'), $date),
+    time: pipe($element.attribute.datetime('time[datetime]')),
+    itemprop: pipe($element.attribute.content('[itemprop*="date" i]')),
     'meta dc date': $element.attribute.content('meta[name*="dc.date" i]'),
     'property dc date': $element.attribute.content('[property*="dc:date" i]'),
-    'id publish': pipe($element.text.query('[id*="publish" i]'), $date),
+    'id publish': pipe($element.text.query('[id*="publish" i]')),
     'id post timestamp': $element.text.query('[id*="post-timestamp" i]'),
-    'class publish': pipe($element.text.query('[class*="publish" i]'), $date),
+    'class publish': pipe($element.text.query('[class*="publish" i]')),
     'class post timestamp': $element.text.query('[class*="post-timestamp" i]'),
-    'class byline': pipe($element.text.query('[class*="byline" i]'), $date),
-    'class dateline': pipe($element.text.query('[class*="dateline" i]'), $date),
-    'id metadata': pipe($element.text.query('[id*="metadata" i]'), $date),
-    'class metadata': pipe($element.text.query('[class*="metadata" i]'), $date),
-    'id date': pipe($element.text.query('[id*="date" i]'), $date),
-    'class date': pipe($element.text.query('[class*="date" i]'), $date),
-    'id post meta': pipe($element.text.query('[id*="post-meta" i]'), $date),
-    'class post meta': pipe(
-      $element.text.query('[class*="post-meta" i]'),
-      $date
-    ),
-    'id time': pipe($element.text.query('[id*="time" i]'), $date),
-    'class time': pipe($element.text.query('[class*="time" i]'), $date)
+    'class byline': pipe($element.text.query('[class*="byline" i]')),
+    'class dateline': pipe($element.text.query('[class*="dateline" i]')),
+    'id metadata': pipe($element.text.query('[id*="metadata" i]')),
+    'class metadata': pipe($element.text.query('[class*="metadata" i]')),
+    'id date': pipe($element.text.query('[id*="date" i]')),
+    'class date': pipe($element.text.query('[class*="date" i]')),
+    'id post meta': pipe($element.text.query('[id*="post-meta" i]')),
+    'class post meta': pipe($element.text.query('[class*="post-meta" i]')),
+    'id time': pipe($element.text.query('[id*="time" i]')),
+    'class time': pipe($element.text.query('[class*="time" i]'))
   })
 
   extractor = pipe(
     $operators(() => this.operators),
-    switchMap((it) =>
-      of(it).pipe(
-        filter((it): it is string | number => !(it instanceof Date)),
-        $date,
-        defaultIfEmpty(<Date>it)
-      )
-    ),
+    map((it) => (isDigitString(it) ? Number.parseInt(it) : it)),
+    $date,
     distinct(),
     map((date) => ({ date: { published: date } }))
   )

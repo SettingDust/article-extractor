@@ -18,14 +18,13 @@ describe('validate', () => {
     combineLatest([
       of('foo').pipe(
         $string.validate,
-        tap((it) => expect(it).be.true)
+        tap((it) => expect(it).be.ok)
       ),
-      of(123)
-        .pipe($string.validate)
-        .pipe(
-          defaultIfEmpty(false),
-          tap((it) => expect(it).be.false)
-        )
+      of(123).pipe(
+        $string.validate,
+        defaultIfEmpty(false),
+        tap((it) => expect(it).be.false)
+      )
     ]).subscribe(() => done())
   })
 })
@@ -35,14 +34,13 @@ describe('notBlank', () => {
     combineLatest([
       of('foo').pipe(
         $string.notBlank,
-        tap((it) => expect(it).be.true)
+        tap((it) => expect(it).be.ok)
       ),
-      of('  ')
-        .pipe($string.notBlank)
-        .pipe(
-          defaultIfEmpty(false),
-          tap((it) => expect(it).be.false)
-        )
+      of('  ').pipe(
+        $string.notBlank,
+        defaultIfEmpty(false),
+        tap((it) => expect(it).be.false)
+      )
     ]).subscribe(() => done())
   })
 })
@@ -64,7 +62,7 @@ describe('closest', () => {
       .pipe(
         $string.closest,
         tap((it) =>
-          expect(it).equals({
+          expect(it).deep.equals({
             result: 'fo1',
             distance: 1,
             source: 'foo'

@@ -7,18 +7,17 @@ describe('validate', () => {
     combineLatest([
       of('ftp://foo.bar').pipe(
         $url.validate,
-        tap((it) => expect(it).be.true)
+        tap((it) => expect(it).be.ok)
       ),
       of('https://foo.bar').pipe(
         $url.validate,
-        tap((it) => expect(it).be.false)
+        tap((it) => expect(it).be.ok)
       ),
-      of(123)
-        .pipe($url.validate)
-        .pipe(
-          defaultIfEmpty(false),
-          tap((it) => expect(it).be.false)
-        )
+      of(123).pipe(
+        $url.validate,
+        defaultIfEmpty(false),
+        tap((it) => expect(it).be.false)
+      )
     ]).subscribe(() => done())
   })
 })

@@ -19,7 +19,7 @@ describe('parse', () => {
         $document,
         $jsonld,
         tap((it) =>
-          expect(it).equals({
+          expect(it).deep.equals({
             '@context': 'https://schema.org/',
             '@id': 'https://foo.com',
             '@type': 'Example',

@@ -1,33 +1,33 @@
-import { from, merge, of, OperatorFunction, pipe, pluck } from 'rxjs'
+import { from, merge, OperatorFunction, pipe } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
-import { Graph, Thing } from 'schema-dts'
+import { Graph } from 'schema-dts'
 import $element from './$element'
 
 const parse = pipe(
   $element.select.query('script[type="application/ld+json"]'),
-  pluck('innerText'),
-  map((it) => <Graph>JSON.parse(<string>it))
+  map((it) => (it as HTMLElement).textContent),
+  map((it) => <Graph>JSON.parse(it))
 )
 
-const get = <T>(
-  name: string,
-  predicate: (thing: Thing) => boolean = () => true
-): OperatorFunction<Graph, T> =>
-  switchMap((graph: Graph) =>
-    of(graph).pipe(
+const get =
+  <T>(
+    name: string,
+    predicate: (Thing) => boolean = () => true
+  ): OperatorFunction<Graph, T> =>
+  ($graph) =>
+    $graph.pipe(
       switchMap(({ '@graph': graph, ...properties }) =>
         merge(
           from(Object.entries(properties)).pipe(
             filter(([key]) => key.endsWith(name)),
-            <OperatorFunction<[string, T], T>>pluck(1)
+            map((it) => <T>it[1])
           ),
           from(graph ?? []).pipe(
             filter((it) => predicate(it)),
-            <OperatorFunction<Thing, T>>pluck(name)
+            map((it) => <T>it[name])
           )
         )
       )
     )
-  )
 
 export default Object.assign(parse, { get })
