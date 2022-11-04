@@ -27,7 +27,6 @@ describe('AuthorUrlExtractor', () => {
         tap((it) =>
           expect(it).deep.equals([
             'https://jsonld.com',
-            'https://jsonld-object.com',
             'https://meta.com',
             'https://itemprop-url.com',
             'https://itemprop.com',

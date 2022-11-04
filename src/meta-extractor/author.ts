@@ -17,15 +17,9 @@ export default new (class extends SequentialExtractor<
       jsonld,
       jsonld.get<Person | Organization>(
         'author',
-        (it) => !it['@type'].endsWith('Rating')
+        (it) => !it['@type']?.endsWith('Rating')
       ),
-      map((it) =>
-        typeof it === 'string'
-          ? it
-          : typeof it.name === 'string'
-          ? it.name
-          : it.name['name'] ?? it.name.toString()
-      )
+      map((it) => (typeof it === 'string' ? it : it.name.toString()))
     ),
     meta: pipe($element.attribute.content('meta[name="author"]')),
     'itemprop name': $element.text.query(
