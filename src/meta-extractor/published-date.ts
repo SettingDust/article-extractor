@@ -1,7 +1,7 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-date/index.js
 
 import { distinct, merge, pipe } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { filter, map } from 'rxjs/operators'
 import { $operators, ExtractOperators, SequentialExtractor } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
@@ -65,6 +65,7 @@ export default new (class extends SequentialExtractor<
 
   extractor = pipe(
     $operators(() => this.operators),
+    filter((it) => !!it),
     map((it) => (isDigitString(it) ? Number.parseInt(it) : it)),
     distinct(),
     $date,

@@ -1,5 +1,4 @@
 import {
-  first,
   from,
   map,
   Observable,
@@ -7,7 +6,8 @@ import {
   of,
   OperatorFunction,
   pipe,
-  switchMap
+  switchMap,
+  take
 } from 'rxjs'
 import memoized from 'nano-memoize'
 
@@ -35,7 +35,7 @@ export abstract class SequentialExtractor<T, U> implements Extractor<T, U> {
   abstract extractor: OperatorFunction<Document, U>
   abstract operators: ExtractOperators<T>
   picker: OperatorFunction<{ source: U; title: string }, U> = pipe(
-    first(),
+    take(1),
     map(({ source }) => source)
   )
 }

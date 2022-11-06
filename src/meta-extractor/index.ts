@@ -6,7 +6,7 @@ import {
   merge,
   mergeAll,
   of,
-  reduce,
+  scan,
   switchMap,
   toArray
 } from 'rxjs'
@@ -30,7 +30,7 @@ export const extractors: Extractor<unknown, object>[] = await firstValueFrom(
   )
 )
 
-export function extract(html: string | Document) {
+export const extract = (html: string | Document) => {
   const $document = of(
     isString.isPrimitive(html)
       ? ((<unknown>(
@@ -52,9 +52,9 @@ export function extract(html: string | Document) {
         ),
       switchMap(({ title }) =>
         from(extractors).pipe(
-          switchMap((extractor) =>
-            extractor.extractor($document).pipe(($extracted) =>
-              extractor.picker(
+          switchMap(({ extractor, picker }) =>
+            extractor($document).pipe(($extracted) =>
+              picker(
                 $extracted.pipe(
                   map((source) => ({
                     source,
@@ -64,7 +64,7 @@ export function extract(html: string | Document) {
               )
             )
           ),
-          reduce((accumulator, value) => deepMerge(accumulator, value), {
+          scan((accumulator, value) => deepMerge(accumulator, value), {
             title
           })
         )
