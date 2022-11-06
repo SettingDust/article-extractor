@@ -20,13 +20,7 @@ export default new (class extends SequentialExtractor<
         'author',
         (it) => !it['@type'].endsWith('Rating')
       ),
-      map((it) =>
-        typeof it === 'string'
-          ? undefined
-          : typeof it.url === 'string'
-          ? it.url
-          : it.url['url'] ?? it.url.toString()
-      )
+      map((it) => (typeof it === 'string' ? it : it.url.toString()))
     ),
     'meta article': $element.attribute.content(
       'meta[property="article:author"]'

@@ -7,5 +7,9 @@
   ],
   "extensions": [
     "ts"
+  ],
+  "reporter": [
+    "text",
+    "html"
   ]
 }

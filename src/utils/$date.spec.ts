@@ -1,4 +1,13 @@
-import { combineLatest, from, lastValueFrom, of, tap } from 'rxjs'
+import {
+  EMPTY,
+  forkJoin,
+  lastValueFrom,
+  merge,
+  of,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs'
 import $date from './$date'
 import { expect } from 'chai'
 import dayjs from 'dayjs'
@@ -22,51 +31,66 @@ describe('$date', () => {
         expectDate('2000年12月15日 12点34分56秒'))
       it('should parse relative time', () =>
         lastValueFrom(
-          combineLatest([
-            from(['3分钟前', '3 mins ago', '3 minutes ago']).pipe((it) => {
-              let timestamp
-              return it.pipe(
-                tap(() => {
-                  timestamp = dayjs()
-                    .subtract(3, 'minutes')
-                    .set('millisecond', 0)
-                    .valueOf()
-                }),
-                $date,
-                tap((it) => {
-                  expect(it.getTime()).equals(timestamp)
-                })
+          merge([
+            EMPTY.pipe(
+              startWith(
+                dayjs().subtract(3, 'minutes').set('millisecond', 0).valueOf()
+              ),
+              switchMap((timestamp) =>
+                forkJoin(
+                  ['3分钟前', '3 minutes ago'].map((it) =>
+                    of(it).pipe(
+                      $date,
+                      tap((it) =>
+                        expect(it.getTime(), '3 minutes ago').equals(timestamp)
+                      )
+                    )
+                  )
+                )
               )
-            }),
-            from(['昨天下午三点', '3pm yesterday']).pipe((it) => {
-              let timestamp
-              return it.pipe(
-                tap(() => {
-                  timestamp = dayjs()
-                    .subtract(1, 'day')
-                    .set('hour', 15)
-                    .set('minute', 0)
-                    .set('second', 0)
-                    .unix()
-                }),
-                $date,
-                tap((it) => {
-                  expect(Math.floor(it.getTime() / 1000)).equals(timestamp)
-                })
+            ),
+            EMPTY.pipe(
+              startWith(
+                dayjs()
+                  .subtract(1, 'day')
+                  .set('hour', 15)
+                  .set('minute', 0)
+                  .set('second', 0)
+                  .unix()
+              ),
+              switchMap((timestamp) =>
+                forkJoin(
+                  ['昨天下午三点', '3pm yesterday'].map((it) =>
+                    of(it).pipe(
+                      $date,
+                      tap((it) =>
+                        expect(
+                          Math.floor(it.getTime() / 1000),
+                          '3pm yesterday'
+                        ).equals(timestamp)
+                      )
+                    )
+                  )
+                )
               )
-            }),
-            from(['刚刚', 'Now']).pipe((it) => {
-              let timestamp
-              return it.pipe(
-                tap(() => {
-                  timestamp = dayjs().unix()
-                }),
-                $date,
-                tap((it) => {
-                  expect(Math.floor(it.getTime() / 1000)).equals(timestamp)
-                })
+            ),
+            EMPTY.pipe(
+              startWith(dayjs().unix()),
+              switchMap((timestamp) =>
+                forkJoin(
+                  ['刚刚', 'Now'].map((it) =>
+                    of(it).pipe(
+                      $date,
+                      tap((it) =>
+                        expect(Math.floor(it.getTime() / 1000), 'Now').equals(
+                          timestamp
+                        )
+                      )
+                    )
+                  )
+                )
               )
-            })
+            )
           ])
         ))
     })

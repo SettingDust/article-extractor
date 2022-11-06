@@ -7,17 +7,15 @@ import {
   tap,
   toArray
 } from 'rxjs'
-import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import author from './author'
 import $document from '../utils/$document'
 import { expect } from 'chai'
+import { $operators } from './utils'
 
-const $author = pipe($document, (it) =>
-  it.pipe(
-    author.extractor,
-    map((it) => it?.author?.name)
-  )
+const $author = pipe(
+  $document,
+  $operators(() => author.operators)
 )
 
 describe('AuthorExtractor', () => {
@@ -78,10 +76,14 @@ describe('AuthorExtractor', () => {
               'meta',
               'itemprop name',
               'itemprop',
+              '\r\n  itemprop name\r\n  \r\n',
+              '',
               'rel2',
               'a class',
               'class a',
               'href',
+              'a class',
+              'class a',
               'class'
             ])
           )

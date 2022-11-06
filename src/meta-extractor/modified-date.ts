@@ -13,14 +13,13 @@ export default new (class extends SequentialExtractor<
   { date: { modified: Date } }
 > {
   operators = new ExtractOperators<string>({
-    jsonld: (it) => {
-      const graph = it.pipe($jsonld)
+    jsonld: pipe($jsonld, (it) =>
       // ISO 8601
-      return merge(
-        graph.pipe($jsonld.get<string>('dateModified')),
-        graph.pipe($jsonld.get<string>('uploadDate'))
+      merge(
+        it.pipe($jsonld.get<string>('dateModified')),
+        it.pipe($jsonld.get<string>('uploadDate'))
       )
-    },
+    ),
     'meta updated': $element.attribute.content(
       'meta[property*="updated_time" i]'
     ),

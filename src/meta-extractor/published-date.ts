@@ -66,8 +66,8 @@ export default new (class extends SequentialExtractor<
   extractor = pipe(
     $operators(() => this.operators),
     map((it) => (isDigitString(it) ? Number.parseInt(it) : it)),
-    $date,
     distinct(),
+    $date,
     map((date) => ({ date: { published: date } }))
   )
 })()

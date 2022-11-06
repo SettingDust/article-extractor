@@ -16,13 +16,13 @@ import { readFile } from 'node:fs/promises'
 import $document from '../utils/$document'
 import { expect } from 'chai'
 
-const $title = pipe(
-  $document,
-  map((it) => of(it)),
-  switchMap((it) =>
-    it.pipe(
-      title.extractor,
-      map((it) => it.title)
+const $title = pipe($document, (it) =>
+  it.pipe(
+    switchMap(() =>
+      it.pipe(
+        title.extractor,
+        map((it) => it.title)
+      )
     )
   )
 )
@@ -30,8 +30,7 @@ const $title = pipe(
 const $singleTitle = pipe(
   $title,
   tap((it) => expect(it).be.equals('foo')),
-  map((it) => of(it)),
-  zipAll()
+  toArray()
 )
 
 describe('TitleExtractor', () => {

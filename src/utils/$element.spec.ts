@@ -1,6 +1,6 @@
 // noinspection NsUnresolvedStyleClassReference,HtmlUnknownAttribute
 
-import { count, from, of, tap } from 'rxjs'
+import { count, defaultIfEmpty, from, lastValueFrom, of, tap } from 'rxjs'
 import { map } from 'rxjs/operators'
 import $document from './$document'
 import $element from './$element'
@@ -66,15 +66,27 @@ describe('$element', () => {
   })
 
   describe('attribute', () => {
-    it('should read attribute of element', function (done) {
-      of('<link id="foo" name="bar">')
-        .pipe(
+    it('should read attribute of element', () =>
+      lastValueFrom(
+        of('<link id="foo" name="bar">').pipe(
           $document,
           $element.select.id('foo'),
           $element.attribute('name'),
           tap((it) => expect(it).be.equals('bar'))
         )
-        .subscribe(() => done())
+      ))
+
+    context('when not exist', () => {
+      it('should ignore', () =>
+        lastValueFrom(
+          of('<link id="foo">').pipe(
+            $document,
+            $element.select.id('foo'),
+            $element.attribute('name'),
+            defaultIfEmpty(false),
+            tap((it) => expect(it).be.false)
+          )
+        ))
     })
   })
 
