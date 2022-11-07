@@ -1010,19 +1010,22 @@ __metadata:
   linkType: hard
 
 "@stdlib/constants-float64-ninf@npm:^0.0.x":
-  version: 0.0.7
-  resolution: "@stdlib/constants-float64-ninf@npm:0.0.7"
+  version: 0.0.8
+  resolution: "@stdlib/constants-float64-ninf@npm:0.0.8"
   dependencies:
     "@stdlib/number-ctor": ^0.0.x
-  checksum: e15e22d884f85a9ac41cef5b97ebe2ed7b65c87a1692b76882e8d27e394c3dee4b9ba2cf3e006f40fc4bcbd4e810eb46e50e7c9a33071737214ae9186fbc46e5
+    "@stdlib/utils-library-manifest": ^0.0.x
+  checksum: 26ce5b0acc457960707e3fb9474619065dd45c358332b4a9d3e021400bd1413cca19c3154f4eaa21f0849b1c45ae292f1ff0f04ec40db49cd65271c7449ff504
   conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
   languageName: node
   linkType: hard
 
 "@stdlib/constants-float64-pinf@npm:^0.0.x":
-  version: 0.0.7
-  resolution: "@stdlib/constants-float64-pinf@npm:0.0.7"
-  checksum: 191df04473ed31bdd0fb8ab6be867bfcde3dcf7f0e2ec823368c1baf098d3117230f8a59a8f78de479ad6e3929ce4d3ddba09150cc45805053f192130fc62c8d
+  version: 0.0.8
+  resolution: "@stdlib/constants-float64-pinf@npm:0.0.8"
+  dependencies:
+    "@stdlib/utils-library-manifest": ^0.0.x
+  checksum: e5f34257df9362badbb87bce91c3c3db7c57826c7389a51fd0f248d04838be948fa539f7ce9cd1431edeb6d4b9d870a1dac7d97613512805734f02c63019c9df
   conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
   languageName: node
   linkType: hard
@@ -1618,6 +1621,27 @@ __metadata:
     "@stdlib/utils-global": ^0.0.x
   checksum: de4e2a5c797010060107ae620de4b64f198f9b28a4e4a6910a6ae310b3a28594fbe47c7ab701ad2dc5d58076b5ed06e7fcf77e89ca609980aa0367c7bfcf4dcd
   conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@swc/cli@npm:^0.1.57":
+  version: 0.1.57
+  resolution: "@swc/cli@npm:0.1.57"
+  dependencies:
+    commander: ^7.1.0
+    fast-glob: ^3.2.5
+    slash: 3.0.0
+    source-map: ^0.7.3
+  peerDependencies:
+    "@swc/core": ^1.2.66
+    chokidar: ^3.5.1
+  peerDependenciesMeta:
+    chokidar:
+      optional: true
+  bin:
+    spack: bin/spack.js
+    swc: bin/swc.js
+  checksum: d19f02233f5ca18df9d5e9da1d0c847d47c81f4548d8465553b9c54b9ab0aca6ebc61b47f1eff085fe211aea0594e0c694bac3d5097f836fbfaa40d31d0a8dfd
   languageName: node
   linkType: hard
 
@@ -2222,6 +2246,7 @@ __metadata:
     "@stdlib/assert-is-string": ^0.0.8
     "@stdlib/assert-is-uri": ^0.0.8
     "@stdlib/utils-merge": ^0.0.7
+    "@swc/cli": ^0.1.57
     "@swc/core": ^1.3.11
     "@types/chai": ^4.3.3
     "@types/mocha": ^10.0.0
@@ -2745,6 +2770,13 @@ __metadata:
   bin:
     color-support: bin.js
   checksum: 9b7356817670b9a13a26ca5af1c21615463b500783b739b7634a0c2047c16cef4b2865d7576875c31c3cddf9dd621fa19285e628f20198b233a5cfdda6d0793b
+  languageName: node
+  linkType: hard
+
+"commander@npm:^7.1.0":
+  version: 7.2.0
+  resolution: "commander@npm:7.2.0"
+  checksum: 53501cbeee61d5157546c0bef0fedb6cdfc763a882136284bed9a07225f09a14b82d2a84e7637edfd1a679fb35ed9502fd58ef1d091e6287f60d790147f68ddc
   languageName: node
   linkType: hard
 
@@ -3725,6 +3757,19 @@ __metadata:
     merge2: ^1.3.0
     micromatch: ^4.0.4
   checksum: f473105324a7780a20c06de842e15ddbb41d3cb7e71d1e4fe6e8373204f22245d54f5ab9e2061e6a1c613047345954d29b022e0e76f5c28b1df9858179a0e6d7
+  languageName: node
+  linkType: hard
+
+"fast-glob@npm:^3.2.5":
+  version: 3.2.12
+  resolution: "fast-glob@npm:3.2.12"
+  dependencies:
+    "@nodelib/fs.stat": ^2.0.2
+    "@nodelib/fs.walk": ^1.2.3
+    glob-parent: ^5.1.2
+    merge2: ^1.3.0
+    micromatch: ^4.0.4
+  checksum: 0b1990f6ce831c7e28c4d505edcdaad8e27e88ab9fa65eedadb730438cfc7cde4910d6c975d6b7b8dc8a73da4773702ebcfcd6e3518e73938bb1383badfe01c2
   languageName: node
   linkType: hard
 
@@ -6690,17 +6735,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"slash@npm:3.0.0, slash@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "slash@npm:3.0.0"
+  checksum: 94a93fff615f25a999ad4b83c9d5e257a7280c90a32a7cb8b4a87996e4babf322e469c42b7f649fd5796edd8687652f3fb452a86dc97a816f01113183393f11c
+  languageName: node
+  linkType: hard
+
 "slash@npm:^1.0.0":
   version: 1.0.0
   resolution: "slash@npm:1.0.0"
   checksum: 4b6e21b1fba6184a7e2efb1dd173f692d8a845584c1bbf9dc818ff86f5a52fc91b413008223d17cc684604ee8bb9263a420b1182027ad9762e35388434918860
-  languageName: node
-  linkType: hard
-
-"slash@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "slash@npm:3.0.0"
-  checksum: 94a93fff615f25a999ad4b83c9d5e257a7280c90a32a7cb8b4a87996e4babf322e469c42b7f649fd5796edd8687652f3fb452a86dc97a816f01113183393f11c
   languageName: node
   linkType: hard
 
@@ -6806,6 +6851,13 @@ __metadata:
   version: 0.5.7
   resolution: "source-map@npm:0.5.7"
   checksum: 5dc2043b93d2f194142c7f38f74a24670cd7a0063acdaf4bf01d2964b402257ae843c2a8fa822ad5b71013b5fcafa55af7421383da919752f22ff488bc553f4d
+  languageName: node
+  linkType: hard
+
+"source-map@npm:^0.7.3":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 

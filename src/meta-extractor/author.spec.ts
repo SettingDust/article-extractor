@@ -11,12 +11,9 @@ import { readFile } from 'node:fs/promises'
 import author from './author'
 import $document from '../utils/$document'
 import { expect } from 'chai'
-import { $operators } from './utils'
+import { $operate } from './utils'
 
-const $author = pipe(
-  $document,
-  $operators(() => author.operators)
-)
+const $author = pipe($document, $operate(author.operators))
 
 describe('AuthorExtractor', () => {
   describe('operators', () => {

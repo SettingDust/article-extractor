@@ -1,9 +1,9 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-title/index.js
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
-import { distinct, mergeMap, OperatorFunction, pipe } from 'rxjs'
+import { distinct, pipe, switchMap } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { $operators, ExtractOperators, SequentialExtractor } from './utils'
+import { ExtractOperators, Extractor } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $string from '../utils/$string'
@@ -13,11 +13,8 @@ const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `
 )
 
-export default new (class extends SequentialExtractor<
-  string,
-  { title: string }
-> {
-  operators = new ExtractOperators<string>({
+export default <Extractor<string, { title: string }>>{
+  operators: new ExtractOperators<string>({
     jsonld: pipe($jsonld, $jsonld.get('headline')),
     'meta og': $element.attribute.content('meta[property="og:title"]'),
     'meta twitter': $element.attribute.content(
@@ -30,13 +27,12 @@ export default new (class extends SequentialExtractor<
     'entry title class': $element.text.className('entry-title'),
     'h1 h2 like title': $element.text.query(':is(h1, h2)[class*="title" i]'),
     title: map((it) => it.title)
-  })
-  extractor: OperatorFunction<Document, { title: string }> = pipe(
-    $operators(() => this.operators),
+  }),
+  extractor: pipe(
     $string.validate,
     $string.notBlank,
     $string.condense,
-    mergeMap(
+    switchMap(
       memoized((title) => {
         const separatorIndex = SEPARATORS.map((it) =>
           title.lastIndexOf(it)
@@ -54,4 +50,4 @@ export default new (class extends SequentialExtractor<
     distinct(),
     map((title) => ({ title }))
   )
-})()
+}

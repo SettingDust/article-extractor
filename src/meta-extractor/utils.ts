@@ -1,51 +1,44 @@
 import {
+  concatMap,
   from,
   map,
   Observable,
-  ObservableInput,
-  of,
   OperatorFunction,
   pipe,
-  switchMap,
   take
 } from 'rxjs'
-import memoized from 'nano-memoize'
 
-export const $operators = memoized(<T>(extractors: () => ExtractOperators<T>) =>
-  pipe(
-    map<Document, Observable<Document>>((it) => of(it)),
-    switchMap<Observable<Document>, ObservableInput<T>>((document) =>
-      from(extractors()).pipe(
-        map((it) => it[1]),
-        switchMap((it) => it(document))
-      )
+export const $operate = <T>(operators: ExtractOperators<T>) =>
+  pipe(($document: Observable<Document>) =>
+    from(operators).pipe(
+      map((it) => it[1]),
+      concatMap((it) => it($document))
     )
   )
-)
 
 export type ExtractOperator<T> = OperatorFunction<Document, T>
 
 export interface Extractor<T, U> {
   operators: ExtractOperators<T>
-  extractor: OperatorFunction<Document, U>
-  picker: OperatorFunction<{ source: U; title: string }, U>
+  extractor: OperatorFunction<T, U>
+  picker?: OperatorFunction<{ source: U; title: string }, U>
 }
 
-export abstract class SequentialExtractor<T, U> implements Extractor<T, U> {
-  abstract extractor: OperatorFunction<Document, U>
-  abstract operators: ExtractOperators<T>
-  picker: OperatorFunction<{ source: U; title: string }, U> = pipe(
-    take(1),
-    map(({ source }) => source)
-  )
-}
+const _sequentialPicker = pipe(
+  take(1),
+  map(({ source }) => source)
+)
+export const sequentialPicker: <T>() => OperatorFunction<
+  { source: T; title: string },
+  T
+> = () => _sequentialPicker
 
 export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
   constructor(items: { [key: string]: ExtractOperator<T> }) {
     super(...Object.entries(items))
   }
 
-  push(...items: [key: string, extractor: ExtractOperator<T>][]) {
+  override push(...items: [key: string, extractor: ExtractOperator<T>][]) {
     const keys = new Set<string>()
     let index = this.length
     while (index--) {

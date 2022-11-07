@@ -1,35 +1,26 @@
 // noinspection NsUnresolvedStyleClassReference
 
-import { from, of, pipe, switchMap, tap, toArray, zipAll } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { from, of, pipe, switchMap, tap, toArray } from 'rxjs'
 import { readFile } from 'node:fs/promises'
-import link from './link'
+import url from './url'
 import $document from '../utils/$document'
 import { expect } from 'chai'
+import { $operate } from './utils'
 
-const $link = pipe($document, (it) =>
-  it.pipe(
-    switchMap(() =>
-      it.pipe(
-        link.extractor,
-        map((it) => it.link)
-      )
-    )
-  )
-)
+const $url = pipe($document, $operate(url.operators))
 
-const $singleLink = pipe(
-  $link,
+const $singleUrl = pipe(
+  $url,
   tap((it) => expect(it).be.equals('https://foo.com')),
   toArray()
 )
 
-describe('LinkExtractor', () => {
+describe('UrlExtractor', () => {
   describe('operators', () => {
-    it('should read meta og title', function (done) {
+    it('should read meta og url', function (done) {
       of('<meta property="og:url" content="https://foo.com">')
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(1))
         )
         .subscribe(() => done())
@@ -41,7 +32,7 @@ describe('LinkExtractor', () => {
         '<meta name="twitter:url" content="https://foo.com">'
       ])
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(2))
         )
         .subscribe(() => done())
@@ -53,7 +44,7 @@ describe('LinkExtractor', () => {
         '<link rel="alternate" href="https://foo.com">'
       ])
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(2))
         )
         .subscribe(() => done())
@@ -76,7 +67,7 @@ describe('LinkExtractor', () => {
        </script>`
       ])
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(2))
         )
         .subscribe(() => done())
@@ -85,7 +76,7 @@ describe('LinkExtractor', () => {
     it('should read post title class', function (done) {
       from(['<div class="post-title"><a href="https://foo.com"></a></div>'])
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(1))
         )
         .subscribe(() => done())
@@ -94,7 +85,7 @@ describe('LinkExtractor', () => {
     it('should read entry title class', function (done) {
       from(['<div class="entry-title"><a href="https://foo.com"></a></div>'])
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(1))
         )
         .subscribe(() => done())
@@ -107,7 +98,7 @@ describe('LinkExtractor', () => {
         '<h2 class="like-title"><a href="https://foo.com"></a></h2>'
       ])
         .pipe(
-          $singleLink,
+          $singleUrl,
           tap((it) => expect(it).has.lengthOf(3))
         )
         .subscribe(() => done())
@@ -117,9 +108,8 @@ describe('LinkExtractor', () => {
       from(['./test/meta-test.html'])
         .pipe(
           switchMap((it) => readFile(it, { encoding: 'utf8' })),
-          $link,
-          map((it) => of(it)),
-          zipAll(),
+          $url,
+          toArray(),
           tap((it) =>
             expect(it).deep.equals([
               'https://jsonld.com',

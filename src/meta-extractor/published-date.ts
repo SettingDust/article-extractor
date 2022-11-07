@@ -1,18 +1,16 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-date/index.js
 
 import { distinct, merge, pipe } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
-import { $operators, ExtractOperators, SequentialExtractor } from './utils'
+import { map } from 'rxjs/operators'
+import { ExtractOperators, Extractor } from './utils'
 import $jsonld from '../utils/$jsonld'
 import $element from '../utils/$element'
 import $date from '../utils/$date'
 import isDigitString from '@stdlib/assert-is-digit-string'
+import $string from '../utils/$string'
 
-export default new (class extends SequentialExtractor<
-  string,
-  { date: { published: Date } }
-> {
-  operators = new ExtractOperators<string>({
+export default <Extractor<string, { date: { published: Date } }>>{
+  operators: new ExtractOperators<string>({
     jsonld: (it) => {
       const graph = it.pipe($jsonld)
       // ISO 8601
@@ -61,14 +59,13 @@ export default new (class extends SequentialExtractor<
     'class post meta': pipe($element.text.query('[class*="post-meta" i]')),
     'id time': pipe($element.text.query('[id*="time" i]')),
     'class time': pipe($element.text.query('[class*="time" i]'))
-  })
-
-  extractor = pipe(
-    $operators(() => this.operators),
-    filter((it) => !!it),
+  }),
+  extractor: pipe(
+    $string.validate,
+    $string.notBlank,
     map((it) => (isDigitString(it) ? Number.parseInt(it) : it)),
-    distinct(),
     $date,
+    distinct(),
     map((date) => ({ date: { published: date } }))
   )
-})()
+}

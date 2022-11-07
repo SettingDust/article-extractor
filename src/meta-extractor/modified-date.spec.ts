@@ -2,7 +2,7 @@ import { from, lastValueFrom, tap, toArray } from 'rxjs'
 import { readFile } from 'node:fs/promises'
 import $document from '../utils/$document'
 import modifiedDate from './modified-date'
-import { $operators } from './utils'
+import { $operate } from './utils'
 import { expect } from 'chai'
 
 describe('modified-date', () => {
@@ -11,7 +11,7 @@ describe('modified-date', () => {
       lastValueFrom(
         from(readFile('test/modified-date.html', { encoding: 'utf8' })).pipe(
           $document,
-          $operators(() => modifiedDate.operators),
+          $operate(modifiedDate.operators),
           toArray(),
           tap((it) =>
             expect(it).deep.equals([

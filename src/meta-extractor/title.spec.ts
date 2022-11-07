@@ -15,16 +15,15 @@ import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import $document from '../utils/$document'
 import { expect } from 'chai'
+import { $operate } from './utils'
+import $string from '../utils/$string'
 
-const $title = pipe($document, (it) =>
-  it.pipe(
-    switchMap(() =>
-      it.pipe(
-        title.extractor,
-        map((it) => it.title)
-      )
-    )
-  )
+const $title = pipe(
+  $document,
+  $operate(title.operators),
+  $string.validate,
+  $string.notBlank,
+  $string.condense
 )
 
 const $singleTitle = pipe(
@@ -168,17 +167,17 @@ describe('TitleExtractor', () => {
         '<meta property="og:title" content="foo – bar">'
       ])
         .pipe(
-          switchMap((it) => $title(of(it))),
-          windowCount(3),
           switchMap((it) =>
-            it.pipe(
-              map((it) => of(it)),
-              zipAll(),
-              tap((it) => expect(it).has.lengthOf(3)),
-              map((it) => it.slice(1)),
-              tap((it) => expect(it).deep.equals(['foo', 'bar']))
+            $title(of(it)).pipe(
+              title.extractor,
+              map((it) => it.title)
             )
           ),
+          windowCount(3),
+          zipAll(),
+          tap((it) => expect(it).has.lengthOf(3)),
+          map((it) => it.slice(1)),
+          tap((it) => expect(it).deep.equals(['foo', 'bar'])),
           toArray()
         )
         .subscribe(() => done())
@@ -187,7 +186,7 @@ describe('TitleExtractor', () => {
     it('should process strange space', function (done) {
       of('<meta property="og:title" content="  foo    bar  ">')
         .pipe(
-          switchMap((it) => $title(of(it))),
+          $title,
           tap((it) => expect(it).be.equals('foo bar')),
           toArray()
         )

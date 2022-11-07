@@ -5,19 +5,15 @@ import {
   pipe,
   switchMap,
   tap,
-  zipAll
+  toArray
 } from 'rxjs'
-import { map } from 'rxjs/operators'
 import { readFile } from 'node:fs/promises'
 import authorUrl from './author-url'
 import $document from '../utils/$document'
 import { expect } from 'chai'
-import { $operators } from './utils'
+import { $operate } from './utils'
 
-const $url = pipe(
-  $document,
-  $operators(() => authorUrl.operators)
-)
+const $url = pipe($document, $operate(authorUrl.operators))
 
 describe('AuthorUrlExtractor', () => {
   describe('operators', () => {
@@ -70,8 +66,7 @@ describe('AuthorUrlExtractor', () => {
         of('./test/meta-test.html').pipe(
           switchMap((it) => readFile(it, { encoding: 'utf8' })),
           $url,
-          map((it) => of(it)),
-          zipAll(),
+          toArray(),
           tap((it) =>
             expect(it).deep.equals([
               'https://jsonld.com',
