@@ -169,7 +169,7 @@ describe('TitleExtractor', () => {
         .pipe(
           switchMap((it) =>
             $title(of(it)).pipe(
-              title.extractor,
+              title.processor,
               map((it) => it.title)
             )
           ),

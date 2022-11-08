@@ -28,7 +28,7 @@ export default <Extractor<string, { title: string }>>{
     'h1 h2 like title': $element.text.query(':is(h1, h2)[class*="title" i]'),
     title: map((it) => it.title)
   }),
-  extractor: pipe(
+  processor: pipe(
     $string.validate,
     $string.notBlank,
     $string.condense,

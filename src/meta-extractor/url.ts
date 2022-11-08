@@ -28,7 +28,7 @@ export default <Extractor<string, { url: string }>>{
     )
   }),
 
-  extractor: pipe(
+  processor: pipe(
     $string.validate,
     $string.trim,
     $url.validate,
@@ -36,7 +36,7 @@ export default <Extractor<string, { url: string }>>{
     map((url) => ({ url }))
   ),
 
-  picker: pipe(
+  selector: pipe(
     toArray(),
     switchMap((array) =>
       from(array).pipe(

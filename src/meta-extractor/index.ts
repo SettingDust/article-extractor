@@ -1,11 +1,13 @@
 import { $operate, sequentialPicker } from './utils'
-import { from, lastValueFrom, mergeMap, of, toArray } from 'rxjs'
+import { from, lastValueFrom, mergeMap, of, reduce } from 'rxjs'
 import { map } from 'rxjs/operators'
 import titleExtractor from './title'
 import { DOMParser } from 'linkedom'
-import deepMerge from '@stdlib/utils-merge'
-import extractors, { ExtractorExtracted, ExtractorsElement } from './extractors'
-import { DeepMerged } from '../utils/deep-merge-types'
+import _deepMerge from 'ts-deepmerge'
+import extractors from './extractors'
+import { interopImportCJSDefault } from 'node-cjs-interop'
+
+const deepMerge = interopImportCJSDefault(_deepMerge)
 
 export const extract = (html: string | Document) => {
   const $document = of(
@@ -17,7 +19,7 @@ export const extract = (html: string | Document) => {
   return lastValueFrom(
     $document.pipe(
       $operate(titleExtractor.operators),
-      titleExtractor.extractor,
+      titleExtractor.processor,
       map((source) => ({
         title: source.title,
         source
@@ -25,25 +27,22 @@ export const extract = (html: string | Document) => {
       sequentialPicker(),
       mergeMap(({ title }) =>
         from(extractors).pipe(
-          mergeMap(({ operators, extractor, picker }) =>
+          mergeMap(({ operators, processor, selector }) =>
             $document.pipe(
               $operate(operators),
-              extractor,
+              processor,
               map((source) => ({
                 source,
                 title
               })),
-              picker ?? sequentialPicker()
+              selector ?? sequentialPicker()
             )
           ),
-          toArray(),
-          map(
-            (it) =>
-              deepMerge({ title }, ...it) as DeepMerged<
-                ExtractorExtracted<ExtractorsElement> & { title: string },
-                Date
-              >
-          )
+          reduce((accumulator, value) => deepMerge(accumulator, value)),
+          map((it) => {
+            const result = deepMerge({ title }, it)
+            return <{ title: string } & RecursivePartial<typeof result>>result
+          })
         )
       )
     )

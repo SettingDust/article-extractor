@@ -60,7 +60,7 @@ export default <Extractor<string, { date: { published: Date } }>>{
     'id time': pipe($element.text.query('[id*="time" i]')),
     'class time': pipe($element.text.query('[class*="time" i]'))
   }),
-  extractor: pipe(
+  processor: pipe(
     $string.validate,
     $string.notBlank,
     map((it) => (isDigitString(it) ? Number.parseInt(it) : it)),

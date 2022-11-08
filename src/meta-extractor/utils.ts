@@ -20,8 +20,8 @@ export type ExtractOperator<T> = OperatorFunction<Document, T>
 
 export interface Extractor<T, U> {
   operators: ExtractOperators<T>
-  extractor: OperatorFunction<T, U>
-  picker?: OperatorFunction<{ source: U; title: string }, U>
+  processor: OperatorFunction<T, U>
+  selector?: OperatorFunction<{ source: U; title: string }, U>
 }
 
 const _sequentialPicker = pipe(

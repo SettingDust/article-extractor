@@ -29,7 +29,7 @@ export default <Extractor<string, { author: { name: string } }>>{
     href: pipe($element.text.query('a[href*="/author/" i]')),
     class: pipe($element.text.query('[class*="author" i]'))
   }),
-  extractor: pipe(
+  processor: pipe(
     $string.validate,
     $string.notBlank,
     $string.condense,

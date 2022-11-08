@@ -31,7 +31,7 @@ export default <Extractor<string, { author: { url: string } }>>{
     'class a': $element.attribute.href('[class*="author" i] a[href]'),
     href: $element.attribute.href('a[href*="/author/" i]')
   }),
-  extractor: pipe(
+  processor: pipe(
     $string.validate,
     $string.trim,
     $url.validate,

@@ -28,7 +28,7 @@ export default <Extractor<string, { date: { modified: Date } }>>{
       '[itemprop*="datemodified" i]'
     )
   }),
-  extractor: pipe(
+  processor: pipe(
     $string.validate,
     $string.notBlank,
     map((it) => (isDigitString(it) ? Number.parseInt(it) : it)),
