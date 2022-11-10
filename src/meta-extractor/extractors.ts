@@ -1,6 +1,5 @@
-import { firstValueFrom, merge, mergeAll, toArray } from 'rxjs'
-import { map } from 'rxjs/operators'
 import { Extractor } from './utils'
+import { Generated } from '../utils/types'
 
 export type ExtractorOperated<T extends Extractor<unknown, unknown>> =
   T extends Extractor<infer R, unknown> ? R : never
@@ -8,23 +7,23 @@ export type ExtractorOperated<T extends Extractor<unknown, unknown>> =
 export type ExtractorExtracted<T extends Extractor<unknown, unknown>> =
   T extends Extractor<unknown, infer R> ? R : never
 
-const extractors = await firstValueFrom(
-  merge([
-    import('./url'),
-    import('./author'),
-    import('./author-url'),
-    import('./published-date'),
-    import('./modified-date')
-  ]).pipe(
-    mergeAll(),
-    map((it) => it.default),
-    toArray()
-  )
-)
+/**
+ * Optional extractors that mutable
+ */
+const extractors = (function* () {
+  yield import('./author-extractor').then((it) => it.default)
+  yield import('./author-url-extractor').then((it) => it.default)
+  yield import('./published-date-extractor').then((it) => it.default)
+  yield import('./modified-date-extractor').then((it) => it.default)
+})()
 
-export type ExtractorsElement = typeof extractors[number]
+export type ExtractorsElement = Awaited<Generated<typeof extractors>>
 
-export default extractors as Extractor<
-  ExtractorOperated<ExtractorsElement>,
-  ExtractorExtracted<ExtractorsElement>
->[]
+export default extractors as Generator<
+  Promise<
+    Extractor<
+      ExtractorOperated<ExtractorsElement>,
+      ExtractorExtracted<ExtractorsElement>
+    >
+  >
+>

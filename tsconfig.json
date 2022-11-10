@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ES2022",
-    "sourceRoot": "src",
-    "outDir": "dist",
+    "sourceRoot": "./src",
+    "outDir": "./dist",
     "declaration": true,
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
@@ -13,5 +13,8 @@
     "types": [
       "mocha"
     ]
+  },
+  "ts-node": {
+    "swc": true
   }
 }

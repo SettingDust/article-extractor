@@ -9,8 +9,8 @@ describe('meta-extractor', () => {
       .then((it) =>
         expect(it).deep.equals({
           title: 'jsonld',
-          author: { name: 'jsonld', url: 'https://jsonld.com' },
-          url: 'https://jsonld.com'
+          author: { name: 'jsonld', url: 'https://jsonld.com/' },
+          url: 'https://jsonld.com/'
         })
       ))
 })

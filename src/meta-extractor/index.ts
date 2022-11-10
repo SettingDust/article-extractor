@@ -1,50 +1,51 @@
-import { $operate, sequentialPicker } from './utils'
-import { from, lastValueFrom, mergeMap, of, reduce } from 'rxjs'
-import { map } from 'rxjs/operators'
-import titleExtractor from './title'
+import titleExtractor from './title-extractor'
+import urlExtractor from './url-extractor'
 import { DOMParser } from 'linkedom'
 import _deepMerge from 'ts-deepmerge'
-import extractors from './extractors'
 import { interopImportCJSDefault } from 'node-cjs-interop'
+import extractors from './extractors'
+import dedupe from 'dedupe'
+import { NestedPartialK } from '../utils/types'
 
 const deepMerge = interopImportCJSDefault(_deepMerge)
 
-export const extract = (html: string | Document) => {
-  const $document = of(
+export const extract = async (html: string | Document, inputUrl?: string) => {
+  const document =
     typeof html === 'string'
-      ? new DOMParser().parseFromString(html, 'text/html')
+      ? <Document>(<unknown>new DOMParser().parseFromString(html, 'text/html'))
       : html
+
+  const title = titleExtractor.selector(
+    titleExtractor.processor(
+      titleExtractor.operators.flatMap((it) => it[1](document)),
+      inputUrl
+    ),
+    undefined,
+    inputUrl
   )
 
-  return lastValueFrom(
-    $document.pipe(
-      $operate(titleExtractor.operators),
-      titleExtractor.processor,
-      map((source) => ({
-        title: source.title,
-        source
-      })),
-      sequentialPicker(),
-      mergeMap(({ title }) =>
-        from(extractors).pipe(
-          mergeMap(({ operators, processor, selector }) =>
-            $document.pipe(
-              $operate(operators),
-              processor,
-              map((source) => ({
-                source,
-                title
-              })),
-              selector ?? sequentialPicker()
-            )
-          ),
-          reduce((accumulator, value) => deepMerge(accumulator, value)),
-          map((it) => {
-            const result = deepMerge({ title }, it)
-            return <{ title: string } & RecursivePartial<typeof result>>result
-          })
-        )
-      )
-    )
+  const url = urlExtractor.selector(
+    urlExtractor.processor(
+      urlExtractor.operators.flatMap((it) => it[1](document)),
+      inputUrl
+    ),
+    title.title,
+    inputUrl
   )
+
+  const results = await Promise.all(extractors).then((it) =>
+    it
+      .map(({ operators, processor, selector }) => {
+        const operated = operators
+          .flatMap((it) => it[1](document))
+          .filter((it) => !!it)
+        const processed = dedupe(processor(operated, url.url))
+        if (processed.length > 0)
+          return selector(processed, title.title, url.url)
+      })
+      .filter((it) => !!it)
+  )
+
+  const result = deepMerge(title, url, ...results)
+  return <NestedPartialK<typeof result, 'title' | 'url', Date>>result
 }

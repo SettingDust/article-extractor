@@ -1,37 +1,10 @@
-import {
-  concatMap,
-  from,
-  map,
-  Observable,
-  OperatorFunction,
-  pipe,
-  take
-} from 'rxjs'
+export type ExtractOperator<T> = (document: Document, url?: string) => T[]
 
-export const $operate = <T>(operators: ExtractOperators<T>) =>
-  pipe(($document: Observable<Document>) =>
-    from(operators).pipe(
-      map((it) => it[1]),
-      concatMap((it) => it($document))
-    )
-  )
-
-export type ExtractOperator<T> = OperatorFunction<Document, T>
-
-export interface Extractor<T, U> {
+export interface Extractor<T, U, V = T> {
   operators: ExtractOperators<T>
-  processor: OperatorFunction<T, U>
-  selector?: OperatorFunction<{ source: U; title: string }, U>
+  processor: (value: T[], inputUrl?: string) => V[]
+  selector: (value: V[], title?: string, inputUrl?: string) => U
 }
-
-const _sequentialPicker = pipe(
-  take(1),
-  map(({ source }) => source)
-)
-export const sequentialPicker: <T>() => OperatorFunction<
-  { source: T; title: string },
-  T
-> = () => _sequentialPicker
 
 export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
   constructor(items: { [key: string]: ExtractOperator<T> }) {
