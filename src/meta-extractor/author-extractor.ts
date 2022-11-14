@@ -7,7 +7,7 @@ import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from '../utils/memoized-functions'
 import elements from '../utils/elements'
 
-export default <Extractor<string, { author: { name: string } }>>{
+export default <Extractor<{ author: { name: string } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)

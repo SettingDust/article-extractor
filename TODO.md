@@ -1,0 +1,1 @@
+- [ ] Tests from extractors' operators

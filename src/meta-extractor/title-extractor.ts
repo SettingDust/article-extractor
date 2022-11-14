@@ -12,8 +12,8 @@ const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `
 )
 
-export default <Extractor<string, { title: string }>>{
-  operators: new ExtractOperators<string>({
+export default <Extractor<{ title: string }>>{
+  operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
       return jsonld.get<string>(json, 'headline')

@@ -1,17 +1,20 @@
-export type ExtractOperator<T> = (document: Document, url?: string) => T[]
+export type ExtractOperator = (document: Document, url?: string) => string[]
 
-export interface Extractor<T, U, V = T> {
-  operators: ExtractOperators<T>
-  processor: (value: T[], inputUrl?: string) => V[]
-  selector: (value: V[], title?: string, inputUrl?: string) => U
+export interface Extractor<T, U = string> {
+  operators: ExtractOperators
+  processor: (value: string[], inputUrl?: string) => U[]
+  selector: (value: U[], title?: string, inputUrl?: string) => T
 }
 
-export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
-  constructor(items: { [key: string]: ExtractOperator<T> }) {
+/**
+ * Digit string won't keep the insertion order in object. Have to set index manually
+ */
+export class ExtractOperators extends Array<[string, ExtractOperator]> {
+  constructor(items: { [key: string]: ExtractOperator }) {
     super(...Object.entries(items))
   }
 
-  override push(...items: [key: string, extractor: ExtractOperator<T>][]) {
+  override push(...items: [key: string, extractor: ExtractOperator][]) {
     const keys = new Set<string>()
     let index = this.length
     while (index--) {
@@ -25,7 +28,7 @@ export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
 
   set(
     key: string,
-    extractor: ExtractOperator<T>,
+    extractor: ExtractOperator,
     index: number = this.findIndex(([it]) => it === key)
   ) {
     this.removeIf(([it]) => it === key)
@@ -37,7 +40,7 @@ export class ExtractOperators<T> extends Array<[string, ExtractOperator<T>]> {
   get = (key: string) => this.find(([it]) => it === key)
 
   private removeIf(
-    callback: (value: [string, ExtractOperator<T>], index: number) => boolean
+    callback: (value: [string, ExtractOperator], index: number) => boolean
   ) {
     let index = this.length
     while (index--) if (callback(this[index], index)) this.splice(index, 1)

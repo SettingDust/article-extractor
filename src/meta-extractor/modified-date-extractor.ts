@@ -6,8 +6,8 @@ import jsonld from '../utils/jsonld'
 import isStringBlank from 'is-string-blank'
 import elements from '../utils/elements'
 
-export default <Extractor<string, { date: { modified: Date } }, Date>>{
-  operators: new ExtractOperators<string>({
+export default <Extractor<{ date: { modified: Date } }, Date>>{
+  operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
       return [

@@ -7,7 +7,7 @@ import elements from '../utils/elements'
 import { absoluteUrl, normalizeUrl } from '../utils/urls'
 import isURI from '@stdlib/assert-is-uri'
 
-export default <Extractor<string, { author: { url: string } }>>{
+export default <Extractor<{ author: { url: string } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)

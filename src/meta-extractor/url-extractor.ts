@@ -7,7 +7,7 @@ import isURI from '@stdlib/assert-is-uri'
 import { closest } from '../utils/memoized-functions'
 import elements from '../utils/elements'
 
-export default <Extractor<string, { url: string }>>{
+export default <Extractor<{ url: string }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
