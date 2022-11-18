@@ -20,19 +20,48 @@ export type DefaultIgnored =
   | TFunction
 
 export type NestedPartialK<T, IgnoredType = DefaultIgnored> = T extends (
-    ...arguments_: unknown[]
-  ) => unknown
+  ...arguments_: unknown[]
+) => unknown
   ? T
   : T extends unknown[]
-    ? T[number] extends IgnoredType
-      ? T[number]
-      : Array<NestedPartialK<T[number], IgnoredType>>
-    : T extends object
-      ? PartialK<{
-        [P in keyof T]: T[P] extends IgnoredType
-          ? T[P]
-          : NestedPartialK<T[P], IgnoredType>
-      }>
-      : T
+  ? T[number] extends IgnoredType
+    ? T[number]
+    : Array<NestedPartialK<T[number], IgnoredType>>
+  : T extends object
+  ? PartialK<{
+      [P in keyof T]: T[P] extends IgnoredType
+        ? T[P]
+        : NestedPartialK<T[P], IgnoredType>
+    }>
+  : T
 
-export type Generated<T> = T extends Generator<infer R> ? R : T
+export type TPartialKeys<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>> extends infer O
+  ? {
+      [P in keyof O]: O[P]
+    }
+  : never
+
+export type TPrimitives =
+  | string
+  | number
+  | boolean
+  | bigint
+  | symbol
+  | Date
+  | TFunction
+
+export type TMerged<T> = [T] extends [Array<unknown>]
+  ? {
+      [K in keyof T]: TMerged<T[K]>
+    }
+  : [T] extends [TPrimitives]
+  ? T
+  : [T] extends [object]
+  ? TPartialKeys<
+      {
+        [K in keyof T]: TMerged<Pick<T, Extract<keyof T, K>>>
+      },
+      never
+    >
+  : T

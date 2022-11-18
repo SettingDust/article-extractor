@@ -1,3 +1,3 @@
-- [ ] [LOW] Tests from extractors' operators
+- [ ] [LOW] Tests from defaultExtractors' operators
 - [ ] Extract content by postlight and readability
 - [ ] [LOW] Extract other meta by postlight and readability

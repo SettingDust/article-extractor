@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "lib/index.js",
   "license": "MIT",
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@3.3.0",
   "type": "module",
   "scripts": {
     "test": "mocha",
