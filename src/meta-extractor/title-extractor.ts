@@ -43,10 +43,11 @@ export default <Extractor<{ title: string }>>{
       ),
     title: (document) => [document.title]
   }),
-  processor: (value) =>
+  processor: memoized((value) =>
     value
-      .filter((it) => typeof it === 'string' && !isStringBlank(it))
-      .map((it) => splitTitle(condenseWhitespace(it))),
+      .filter((it) => !isStringBlank(it))
+      .map((it) => splitTitle(condenseWhitespace(it)))
+  ),
   selector: (source) => ({ title: source[0] })
 }
 

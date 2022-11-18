@@ -5,6 +5,7 @@ import parseDate from '../utils/parse-date'
 import jsonld from '../utils/jsonld'
 import isStringBlank from 'is-string-blank'
 import elements from '../utils/elements'
+import memoized from 'nano-memoize'
 
 export default <Extractor<{ date: { modified: Date } }, Date>>{
   operators: new ExtractOperators({
@@ -31,9 +32,8 @@ export default <Extractor<{ date: { modified: Date } }, Date>>{
         document.querySelectorAll('[itemprop*="datemodified" i]')
       )
   }),
-  processor: (value) =>
-    value
-      .filter((it) => typeof it === 'string' && !isStringBlank(it))
-      .map((it) => parseDate(it)),
+  processor: memoized((value) =>
+    value.filter((it) => !isStringBlank(it)).map((it) => parseDate(it))
+  ),
   selector: (source) => ({ date: { modified: source[0] } })
 }

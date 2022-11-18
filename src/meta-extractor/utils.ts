@@ -1,3 +1,5 @@
+import memoized from 'nano-memoize'
+
 export type ExtractOperator = (document: Document, url?: string) => string[]
 
 export interface Extractor<T, U = string> {
@@ -10,8 +12,12 @@ export interface Extractor<T, U = string> {
  * Digit string won't keep the insertion order in object. Have to set index manually
  */
 export class ExtractOperators extends Array<[string, ExtractOperator]> {
-  constructor(items: { [key: string]: ExtractOperator }) {
-    super(...Object.entries(items))
+  constructor(items: { [key: string]: ExtractOperator } = {}) {
+    super(
+      ...Object.entries(items).map(
+        (it) => <[string, ExtractOperator]>[it[0], memoized(it[1])]
+      )
+    )
   }
 
   override push(...items: [key: string, extractor: ExtractOperator][]) {
@@ -32,8 +38,8 @@ export class ExtractOperators extends Array<[string, ExtractOperator]> {
     index: number = this.findIndex(([it]) => it === key)
   ) {
     this.removeIf(([it]) => it === key)
-    if (index === -1) this.push([key, extractor])
-    else this.splice(index, 0, [key, extractor])
+    if (index === -1) this.push([key, memoized(extractor)])
+    else this.splice(index, 0, [key, memoized(extractor)])
     return this
   }
 

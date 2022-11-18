@@ -6,6 +6,7 @@ import jsonld from '../utils/jsonld'
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from '../utils/memoized-functions'
 import elements from '../utils/elements'
+import memoized from 'nano-memoize'
 
 export default <Extractor<{ author: { name: string } }>>{
   operators: new ExtractOperators({
@@ -42,9 +43,8 @@ export default <Extractor<{ author: { name: string } }>>{
     class: (document) =>
       elements.textContent(document.querySelectorAll('[class*="author" i]'))
   }),
-  processor: (value) =>
-    value
-      .filter((it) => typeof it === 'string' && !isStringBlank(it))
-      .map((it) => condenseWhitespace(it)),
+  processor: memoized((value) =>
+    value.filter((it) => !isStringBlank(it)).map((it) => condenseWhitespace(it))
+  ),
   selector: (source) => ({ author: { name: source[0] } })
 }

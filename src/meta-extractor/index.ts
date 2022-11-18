@@ -1,13 +1,9 @@
 import titleExtractor from './title-extractor'
 import urlExtractor from './url-extractor'
 import { DOMParser } from 'linkedom'
-import _deepMerge from 'ts-deepmerge'
-import { interopImportCJSDefault } from 'node-cjs-interop'
-import extractors from './extractors'
-import dedupe from 'dedupe'
+import extractors, { ExtractorExtracted } from './extractors'
 import { NestedPartialK } from '../utils/types'
-
-const deepMerge = interopImportCJSDefault(_deepMerge)
+import { dedupe, deepMerge } from '../utils/memoized-functions'
 
 export const extract = async (html: string | Document, inputUrl?: string) => {
   const document =
@@ -47,5 +43,9 @@ export const extract = async (html: string | Document, inputUrl?: string) => {
   )
 
   const result = deepMerge(title, url, ...results)
-  return <NestedPartialK<typeof result, 'title' | 'url', Date>>result
+  return <
+    NestedPartialK<typeof result> &
+      ExtractorExtracted<typeof titleExtractor> &
+      ExtractorExtracted<typeof urlExtractor>
+  >result
 }

@@ -6,6 +6,7 @@ import { absoluteUrl, normalizeUrl } from '../utils/urls'
 import isURI from '@stdlib/assert-is-uri'
 import { closest } from '../utils/memoized-functions'
 import elements from '../utils/elements'
+import memoized from 'nano-memoize'
 
 export default <Extractor<{ url: string }>>{
   operators: new ExtractOperators({
@@ -51,16 +52,17 @@ export default <Extractor<{ url: string }>>{
       )
   }),
 
-  processor: (value, inputUrl) =>
+  processor: memoized((value, inputUrl) =>
     value
       .map((it) => normalizeUrl(absoluteUrl(inputUrl, it)))
-      .filter((it) => isURI(it)),
+      .filter((it) => isURI(it))
+  ),
 
-  selector: (value, title, inputUrl) => {
+  selector: memoized((value, title, inputUrl) => {
     if (inputUrl) value.push(inputUrl)
     const { distance, source, result } = closest(title, ...value)
     return distance > 0.7 * source.length
       ? { url: inputUrl ?? value[0] }
       : { url: result }
-  }
+  })
 }

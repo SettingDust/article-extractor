@@ -6,6 +6,7 @@ import jsonld from '../utils/jsonld'
 import elements from '../utils/elements'
 import { absoluteUrl, normalizeUrl } from '../utils/urls'
 import isURI from '@stdlib/assert-is-uri'
+import memoized from 'nano-memoize'
 
 export default <Extractor<{ author: { url: string } }>>{
   operators: new ExtractOperators({
@@ -58,9 +59,10 @@ export default <Extractor<{ author: { url: string } }>>{
         document.querySelectorAll('a[href*="/author/" i]')
       )
   }),
-  processor: (value, inputUrl) =>
+  processor: memoized((value, inputUrl) =>
     value
       .map((it) => normalizeUrl(absoluteUrl(inputUrl, it)))
-      .filter((it) => isURI(it)),
+      .filter((it) => isURI(it))
+  ),
   selector: (source) => ({ author: { url: source[0] } })
 }
