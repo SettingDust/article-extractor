@@ -11,8 +11,10 @@
     "noImplicitOverride": true,
     "sourceMap": true,
     "types": [
-      "mocha"
-    ]
+      "mocha",
+      "node"
+    ],
+    "skipLibCheck": true
   },
   "ts-node": {
     "swc": true
