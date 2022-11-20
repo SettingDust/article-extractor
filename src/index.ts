@@ -3,13 +3,12 @@ import urlExtractor from './url-extractor'
 import { DOMParser } from 'linkedom'
 import defaultExtractors, {
   DefaultExtractors,
-  Extractor,
-  ExtractorExtracted,
   TitleExtracted,
   UrlExtracted
 } from './default-extractors'
 import { NestedPartialK, TMerged } from './utils/types'
 import { dedupe, deepMerge } from './utils/memoized-functions'
+import { Extractor, ExtractorExtracted } from './utils/extractors'
 
 type DefaultExtracted = NestedPartialK<ExtractorExtracted<DefaultExtractors>> &
   TitleExtracted &
@@ -85,4 +84,3 @@ export async function extract<T>(
       UrlExtracted
   >result
 }
-

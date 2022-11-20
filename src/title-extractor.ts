@@ -1,12 +1,12 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-title/index.js
 // https://github.com/mozilla/readability/blob/master/Readability.js#L459=
 
-import { ExtractOperators, Extractor } from './default-extractors'
 import jsonld from './utils/jsonld'
 import memoized from 'nano-memoize'
 import elements from './utils/elements'
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from './utils/memoized-functions'
+import { ExtractOperators, Extractor } from './utils/extractors'
 
 const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `

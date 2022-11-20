@@ -1,11 +1,11 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-date/index.js
 
-import { ExtractOperators, Extractor } from './default-extractors'
 import parseDate from './utils/parse-date'
 import jsonld from './utils/jsonld'
 import isStringBlank from 'is-string-blank'
 import elements from './utils/elements'
 import memoized from 'nano-memoize'
+import { ExtractOperators, Extractor } from './utils/extractors'
 
 export default <Extractor<{ date: { modified: Date } }, Date>>{
   operators: new ExtractOperators({

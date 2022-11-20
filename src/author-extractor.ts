@@ -1,12 +1,12 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-author/index.js
 
 import { Organization, Person } from 'schema-dts'
-import { ExtractOperators, Extractor } from './default-extractors'
 import jsonld from './utils/jsonld'
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from './utils/memoized-functions'
 import elements from './utils/elements'
 import memoized from 'nano-memoize'
+import { ExtractOperators, Extractor } from './utils/extractors'
 
 export default <Extractor<{ author: { name: string } }>>{
   operators: new ExtractOperators({

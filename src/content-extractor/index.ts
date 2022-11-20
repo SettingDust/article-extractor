@@ -1,7 +1,7 @@
 import isStringBlank from 'is-string-blank'
 import { Readability } from '@mozilla/readability'
-import { ExtractOperators, Extractor } from '../default-extractors'
 import { selectors } from './selector-extractors'
+import { ExtractOperators, Extractor } from '../utils/extractors'
 
 export default <Extractor<{ content: string }>>{
   operators: new ExtractOperators({
