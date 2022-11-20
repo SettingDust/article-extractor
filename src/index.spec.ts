@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { extract } from './index'
 import { expect } from 'chai'
 
-describe('meta-extractor', () => {
+describe('article-extractor', () => {
   it('should working', () =>
     readFile('./test/meta-test.html', { encoding: 'utf8' })
       .then(extract)

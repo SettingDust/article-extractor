@@ -5,7 +5,8 @@
   "jsc": {
     "parser": {
       "syntax": "typescript"
-    }
+    },
+    "target": "es2020"
   },
   "exclude": [
     ".*\\.spec.ts$",

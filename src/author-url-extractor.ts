@@ -1,10 +1,10 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-author/index.js
 
 import { Organization, Person } from 'schema-dts'
-import { ExtractOperators, Extractor } from './utils'
-import jsonld from '../utils/jsonld'
-import elements from '../utils/elements'
-import { absoluteUrl, normalizeUrl } from '../utils/urls'
+import { ExtractOperators, Extractor } from './default-extractors'
+import jsonld from './utils/jsonld'
+import elements from './utils/elements'
+import { absoluteUrl, normalizeUrl } from './utils/urls'
 import isURI from '@stdlib/assert-is-uri'
 import memoized from 'nano-memoize'
 

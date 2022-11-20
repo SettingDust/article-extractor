@@ -1,3 +1,5 @@
+import titleExtractor from './title-extractor'
+import urlExtractor from './url-extractor'
 import memoized from 'nano-memoize'
 
 export type ExtractOperator = (document: Document, url?: string) => string[]
@@ -52,3 +54,30 @@ export class ExtractOperators extends Array<[string, ExtractOperator]> {
     while (index--) if (callback(this[index], index)) this.splice(index, 1)
   }
 }
+
+/**
+ * Optional defaultExtractors that mutable
+ */
+const defaultExtractors = await Promise.all([
+  import('./author-extractor'),
+  import('./author-url-extractor'),
+  import('./published-date-extractor'),
+  import('./modified-date-extractor'),
+  import('./content-extractor')
+]).then((it) => it.map((it) => it.default))
+
+export type ExtractorExtracted<T extends Extractor<unknown, unknown>> =
+  T extends Extractor<infer R, unknown> ? R : never
+
+export type ExtractorProcessed<T extends Extractor<unknown, unknown>> =
+  T extends Extractor<unknown, infer R> ? R : never
+
+export type DefaultExtractors = typeof defaultExtractors[number]
+
+export type TitleExtracted = ExtractorExtracted<typeof titleExtractor>
+export type UrlExtracted = ExtractorExtracted<typeof urlExtractor>
+
+export default defaultExtractors as Extractor<
+  ExtractorExtracted<DefaultExtractors>,
+  ExtractorProcessed<DefaultExtractors>
+>[]

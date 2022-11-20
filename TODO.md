@@ -1,3 +1,3 @@
 - [ ] [LOW] Tests from defaultExtractors' operators
-- [ ] Extract content by postlight and readability
+- [ ] [LOW] Extract content by postlight(No types and can't parse `Document`)
 - [ ] [LOW] Extract other meta by postlight and readability

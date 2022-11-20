@@ -1,9 +1,9 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-date/index.js
 
-import { ExtractOperators, Extractor } from './utils'
-import jsonld from '../utils/jsonld'
-import parseDate from '../utils/parse-date'
-import elements from '../utils/elements'
+import { ExtractOperators, Extractor } from './default-extractors'
+import jsonld from './utils/jsonld'
+import parseDate from './utils/parse-date'
+import elements from './utils/elements'
 import isStringBlank from 'is-string-blank'
 import memoized from 'nano-memoize'
 

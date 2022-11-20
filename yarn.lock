@@ -191,6 +191,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mozilla/readability@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "@mozilla/readability@npm:0.4.2"
+  checksum: d12e72c8d8bb7a744701ac08a8e6b0df1c44c3674388ff1c35b5c955d89acc0eaa7748ad3f8c35646ba8e6c4536bb12ce2f4fcbb3c784ee037b4501b15f02485
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1241,6 +1248,7 @@ __metadata:
   resolution: "article-extractor@workspace:."
   dependencies:
     "@microsoft/recognizers-text-date-time": ^1.3.0
+    "@mozilla/readability": ^0.4.2
     "@stdlib/assert-is-digit-string": ^0.0.9
     "@stdlib/assert-is-string": ^0.0.8
     "@stdlib/assert-is-uri": ^0.0.8
@@ -1274,7 +1282,6 @@ __metadata:
     normalize-url: ^8.0.0
     prettier: ^2.7.1
     schema-dts: ^1.1.0
-    tidy-url: ^1.6.3
     ts-deepmerge: ^5.0.0
     ts-node: ^10.9.1
     typescript: ^4.9.3
@@ -4534,13 +4541,6 @@ __metadata:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: 02805740c12851ea5982686810702e2f14369a5f4c5c40a836821e3eefc65ffeec3131ba324692a37608294b0fd8c1e55a2dd571ffed4909822787668ddbee5c
-  languageName: node
-  linkType: hard
-
-"tidy-url@npm:^1.6.3":
-  version: 1.6.3
-  resolution: "tidy-url@npm:1.6.3"
-  checksum: 44b55ee4e01e6f7386b08b2e334b9ee921fb5a470c1aeccdc25cbfe66d4e4afafcd939f16ce2b0210e287e5f1584936523e99e3afa2627a6657a8075513adfee
   languageName: node
   linkType: hard
 

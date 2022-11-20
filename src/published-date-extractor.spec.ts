@@ -1,4 +1,4 @@
-import parseHtml from '../utils/parse-html'
+import parseHtml from './utils/parse-html'
 import { expect } from 'chai'
 import { readFileSync } from 'node:fs'
 import publishedDateExtractor from './published-date-extractor'

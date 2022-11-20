@@ -1,7 +1,7 @@
 // noinspection NsUnresolvedStyleClassReference
 
 import { expect } from 'chai'
-import parseHtml from '../utils/parse-html'
+import parseHtml from './utils/parse-html'
 import { readFileSync } from 'node:fs'
 import titleExtractor from './title-extractor'
 
