@@ -5,6 +5,6 @@
   ],
   "node-option": [
     "experimental-specifier-resolution=node",
-    "loader=ts-node/esm"
+    "loader=@esbuild-kit/esm-loader"
   ]
 }
