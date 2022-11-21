@@ -6,20 +6,38 @@ import defaultExtractors, {
   TitleExtracted,
   UrlExtracted
 } from './default-extractors'
-import { NestedPartialK, TMerged } from './utils/types'
+import { DeepMerged, NestedPartial } from './utils/types'
 import { dedupe, deepMerge } from './utils/memoized-functions'
 import { Extractor, ExtractorExtracted } from './utils/extractors'
 import sanitizeHtml, { defaultSanitizeOptions } from './utils/sanitize-html'
 import sanitize from 'sanitize-html'
 
-type DefaultExtracted = NestedPartialK<ExtractorExtracted<DefaultExtractors>> &
+type MergedExtracted<T> = NestedPartial<DeepMerged<T>> &
   TitleExtracted &
   UrlExtracted
 
+type DefaultExtracted = MergedExtracted<ExtractorExtracted<DefaultExtractors>>
+
 export interface ExtractOptions<T> {
+  /**
+   * Url for the page. **may not be the final result**
+   * @see urlExtractor
+   */
   url?: string
-  extractors?: Extractor<T, unknown>[]
+  /**
+   * Extractors for extract.
+   * @see defaultExtractors
+   */
+  extractors?: Extractor<T>[]
+  /**
+   * Options of sanitize-html
+   * @see https://www.npmjs.com/package/sanitize-html
+   */
   sanitizeHtml?: sanitize.IOptions
+  /**
+   * For parse date
+   * @see mapToNearestLanguage
+   */
   lang?: string
 }
 
@@ -35,14 +53,14 @@ export async function extract<T>(
 export async function extract<T>(
   html: string | Document,
   options?: ExtractOptions<T>
-): Promise<NestedPartialK<T & TitleExtracted & UrlExtracted>>
+): Promise<MergedExtracted<T>>
 
 export async function extract<T>(
   html: string | Document,
   options: ExtractOptions<T> = {}
 ) {
   options = {
-    extractors: <Extractor<T, unknown>[]>defaultExtractors,
+    extractors: <Extractor<T>[]>defaultExtractors,
     sanitizeHtml: defaultSanitizeOptions,
     ...options
   }
@@ -107,9 +125,5 @@ export async function extract<T>(
   )
 
   const result = deepMerge(title, url, ...results)
-  return <
-    NestedPartialK<TMerged<TitleExtracted | UrlExtracted | T>> &
-      TitleExtracted &
-      UrlExtracted
-  >result
+  return <MergedExtracted<T> & TitleExtracted & UrlExtracted>result
 }

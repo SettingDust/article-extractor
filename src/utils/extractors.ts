@@ -4,8 +4,17 @@ import sanitize from 'sanitize-html'
 export type ExtractOperator = (document: Document, url?: string) => string[]
 
 export interface Extractor<T> {
+  /**
+   * Operators that fetch string from document
+   */
   operators: ExtractOperators
+  /**
+   * Process raw strings from {@link operators}. Such as validate and filter.
+   */
   processor: (value: string[], context?: ExtractorContext) => string[]
+  /**
+   * Pick one string as final result and transform to target type (eg. {@link Date}).
+   */
   selector: (value: string[], title?: string, context?: ExtractorContext) => T
 }
 
@@ -16,7 +25,8 @@ export interface ExtractorContext {
 }
 
 /**
- * Digit string won't keep the insertion order in object. Have to set index manually
+ * Class for manage operators can operate with index
+ * Note: digit string won't keep the insertion order in object. Have to set index manually
  */
 export class ExtractOperators extends Array<[string, ExtractOperator]> {
   constructor(items: { [key: string]: ExtractOperator } = {}) {

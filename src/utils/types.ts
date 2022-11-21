@@ -19,49 +19,45 @@ export type DefaultIgnored =
   | Date
   | TFunction
 
-export type NestedPartialK<T, IgnoredType = DefaultIgnored> = T extends (
+export type NestedPartial<T, IgnoredType = DefaultIgnored> = T extends (
   ...arguments_: unknown[]
 ) => unknown
   ? T
   : T extends unknown[]
   ? T[number] extends IgnoredType
     ? T[number]
-    : Array<NestedPartialK<T[number], IgnoredType>>
+    : Array<NestedPartial<T[number], IgnoredType>>
   : T extends object
   ? PartialK<{
       [P in keyof T]: T[P] extends IgnoredType
         ? T[P]
-        : NestedPartialK<T[P], IgnoredType>
+        : NestedPartial<T[P], IgnoredType>
     }>
   : T
 
-export type TPartialKeys<T, K extends keyof T> = Omit<T, K> &
+type IndexValue<T, K extends PropertyKey> = T extends unknown
+  ? K extends keyof T
+    ? T[K]
+    : never
+  : never
+
+type AllKeys<T> = T extends unknown ? keyof T : never
+
+type PartialKeys<T, K extends keyof T = never> = Omit<T, K> &
   Partial<Pick<T, K>> extends infer O
   ? {
       [P in keyof O]: O[P]
     }
   : never
 
-export type TPrimitives =
-  | string
-  | number
-  | boolean
-  | bigint
-  | symbol
-  | Date
-  | TFunction
-
-export type TMerged<T> = [T] extends [Array<unknown>]
+export type DeepMerged<T> = [T] extends [Array<unknown>]
   ? {
-      [K in keyof T]: TMerged<T[K]>
+      [K in keyof T]: DeepMerged<T[K]>
     }
-  : [T] extends [TPrimitives]
+  : [T] extends [DefaultIgnored]
   ? T
   : [T] extends [object]
-  ? TPartialKeys<
-      {
-        [K in keyof T]: TMerged<Pick<T, Extract<keyof T, K>>>
-      },
-      never
-    >
+  ? PartialKeys<{
+      [K in AllKeys<T>]: DeepMerged<IndexValue<T, K>>
+    }>
   : T

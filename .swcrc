@@ -6,11 +6,12 @@
     "parser": {
       "syntax": "typescript"
     },
-    "target": "es2020"
+    "target": "es2022"
   },
   "exclude": [
     ".*\\.spec.ts$",
     ".*\\.d.ts$"
   ],
-  "sourceMaps": true
+  "sourceMaps": true,
+  "minify": true
 }
