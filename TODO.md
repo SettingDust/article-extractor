@@ -2,3 +2,4 @@
 - [ ] [LOW] Extract content by postlight(No types and can't parse `Document`)
 - [ ] [LOW] Extract other meta by postlight and readability
 - [ ] [?] Remember elements extracted for avoiding them appears in content
+- [ ] Replace html crush with another minifier. Too slow

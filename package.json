@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "test": "mocha",
-    "test:coverage": "c8 mocha"
+    "test:coverage": "c8 mocha",
+    "test:profiling": "mocha -n prof"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
