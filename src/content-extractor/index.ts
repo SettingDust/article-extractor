@@ -2,6 +2,8 @@ import isStringBlank from 'is-string-blank'
 import { Readability } from '@mozilla/readability'
 import { selectors } from './selector-extractors'
 import { ExtractOperators, Extractor } from '../utils/extractors'
+import sanitizeHtml, { defaultSanitizeOptions } from '../utils/sanitize-html'
+import { minifyHtml } from '../utils/memoized-functions'
 
 export default <Extractor<{ content: string }>>{
   operators: new ExtractOperators({
@@ -31,5 +33,9 @@ export default <Extractor<{ content: string }>>{
     }
   }),
   processor: (value) => value.filter((it) => !isStringBlank(it)),
-  selector: (source) => ({ content: source[0] })
+  selector: (source, title, context) => ({
+    content: minifyHtml(
+      sanitizeHtml(source[0], context?.sanitizeHtml ?? defaultSanitizeOptions)
+    )
+  })
 }

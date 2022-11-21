@@ -59,9 +59,9 @@ export default <Extractor<{ author: { url: string } }>>{
         document.querySelectorAll('a[href*="/author/" i]')
       )
   }),
-  processor: memoized((value, inputUrl) =>
+  processor: memoized((value, context) =>
     value
-      .map((it) => normalizeUrl(absoluteUrl(inputUrl, it)))
+      .map((it) => normalizeUrl(absoluteUrl(context.url, it)))
       .filter((it) => isURI(it))
   ),
   selector: (source) => ({ author: { url: source[0] } })

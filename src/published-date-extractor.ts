@@ -7,7 +7,7 @@ import isStringBlank from 'is-string-blank'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'
 
-export default <Extractor<{ date: { published: Date } }, Date>>{
+export default <Extractor<{ date: { published: Date } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
@@ -118,8 +118,15 @@ export default <Extractor<{ date: { published: Date } }, Date>>{
     'class time': (document) =>
       elements.textContent(document.querySelectorAll('[class*="time" i]'))
   }),
-  processor: memoized((value) =>
-    value.filter((it) => !isStringBlank(it)).map((it) => parseDate(it))
-  ),
-  selector: (source) => ({ date: { published: source[0] } })
+  processor: memoized((value) => value.filter((it) => !isStringBlank(it))),
+  selector: (source) => {
+    let date
+    for (const string of source) {
+      date = parseDate(string)
+      if (date) break
+    }
+    return {
+      date: { published: date }
+    }
+  }
 }

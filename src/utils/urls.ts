@@ -8,5 +8,9 @@ export const normalizeUrl = (url: string) =>
     removeTrailingSlash: false
   })
 
-export const absoluteUrl = (base: string, relative: string) =>
-  relative ? new URL(relative, base).toString() : new URL(base).toString()
+export const absoluteUrl = (base?: string, relative?: string) =>
+  base
+    ? relative
+      ? new URL(relative, base).toString()
+      : new URL(base).toString()
+    : relative

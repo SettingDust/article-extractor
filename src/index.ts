@@ -9,6 +9,8 @@ import defaultExtractors, {
 import { NestedPartialK, TMerged } from './utils/types'
 import { dedupe, deepMerge } from './utils/memoized-functions'
 import { Extractor, ExtractorExtracted } from './utils/extractors'
+import sanitizeHtml, { defaultSanitizeOptions } from './utils/sanitize-html'
+import sanitize from 'sanitize-html'
 
 type DefaultExtracted = NestedPartialK<ExtractorExtracted<DefaultExtractors>> &
   TitleExtracted &
@@ -17,6 +19,8 @@ type DefaultExtracted = NestedPartialK<ExtractorExtracted<DefaultExtractors>> &
 export interface ExtractOptions<T> {
   url?: string
   extractors?: Extractor<T, unknown>[]
+  sanitizeHtml?: sanitize.IOptions
+  lang?: string
 }
 
 export async function extract(
@@ -39,40 +43,65 @@ export async function extract<T>(
 ) {
   options = {
     extractors: <Extractor<T, unknown>[]>defaultExtractors,
+    sanitizeHtml: defaultSanitizeOptions,
     ...options
   }
   const document =
     typeof html === 'string'
-      ? <Document>(<unknown>new DOMParser().parseFromString(html, 'text/html'))
+      ? <Document>(
+          (<unknown>(
+            new DOMParser().parseFromString(
+              sanitizeHtml(html, options.sanitizeHtml),
+              'text/html'
+            )
+          ))
+        )
       : html
+
+  options.lang ??= document.documentElement.lang
 
   const title = titleExtractor.selector(
     titleExtractor.processor(
-      titleExtractor.operators.flatMap((it) => it[1](document)),
-      options.url
+      [
+        ...titleExtractor.operators
+          .flatMap((it) => it[1](document))
+          .filter((it) => !!it)
+      ],
+      options
     ),
     undefined,
-    options.url
+    options
   )
 
   const url = urlExtractor.selector(
     urlExtractor.processor(
-      urlExtractor.operators.flatMap((it) => it[1](document)),
-      options.url
+      [
+        ...urlExtractor.operators
+          .flatMap((it) => it[1](document))
+          .filter((it) => !!it)
+      ],
+      options
     ),
     title.title,
-    options.url
+    options
   )
+
+  const context = {
+    ...options,
+    url: url.url
+  }
 
   const results = await Promise.all(options.extractors).then((it) =>
     it
       .map(({ operators, processor, selector }) => {
-        const operated = operators
-          .flatMap((it) => it[1](document))
-          .filter((it) => !!it)
-        const processed = dedupe(processor(operated, url.url))
+        const operated = [
+          ...operators
+            .flatMap((it) => it[1](document, url.url))
+            .filter((it) => !!it)
+        ]
+        const processed = dedupe(processor(operated, context))
         if (processed.length > 0)
-          return selector(processed, title.title, url.url)
+          return selector(processed, title.title, context)
       })
       .filter((it) => !!it)
   )

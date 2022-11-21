@@ -1,11 +1,18 @@
 import memoized from 'nano-memoize'
+import sanitize from 'sanitize-html'
 
 export type ExtractOperator = (document: Document, url?: string) => string[]
 
-export interface Extractor<T, U = string> {
+export interface Extractor<T> {
   operators: ExtractOperators
-  processor: (value: string[], inputUrl?: string) => U[]
-  selector: (value: U[], title?: string, inputUrl?: string) => T
+  processor: (value: string[], context?: ExtractorContext) => string[]
+  selector: (value: string[], title?: string, context?: ExtractorContext) => T
+}
+
+export interface ExtractorContext {
+  url?: string
+  sanitizeHtml?: sanitize.IOptions
+  lang?: string
 }
 
 /**
@@ -53,7 +60,5 @@ export class ExtractOperators extends Array<[string, ExtractOperator]> {
   }
 }
 
-export type ExtractorExtracted<T extends Extractor<unknown, unknown>> =
-  T extends Extractor<infer R, unknown> ? R : never
-export type ExtractorProcessed<T extends Extractor<unknown, unknown>> =
-  T extends Extractor<unknown, infer R> ? R : never
+export type ExtractorExtracted<T extends Extractor<unknown>> =
+  T extends Extractor<infer R> ? R : never

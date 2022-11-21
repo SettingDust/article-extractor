@@ -52,17 +52,17 @@ export default <Extractor<{ url: string }>>{
       )
   }),
 
-  processor: memoized((value, inputUrl) =>
+  processor: memoized((value, context) =>
     value
-      .map((it) => normalizeUrl(absoluteUrl(inputUrl, it)))
+      .map((it) => normalizeUrl(absoluteUrl(context?.url, it)))
       .filter((it) => isURI(it))
   ),
 
-  selector: memoized((value, title, inputUrl) => {
-    if (inputUrl) value.push(inputUrl)
-    const { distance, source, result } = closest(title, ...value)
-    return distance > 0.7 * source.length
-      ? { url: inputUrl ?? value[0] }
+  selector: memoized((value, title, context) => {
+    if (context?.url) value.push(context?.url)
+    const { distance, result } = closest(title, ...value)
+    return distance > 0.7 * title.length
+      ? { url: context?.url ?? value[0] }
       : { url: result }
   })
 }

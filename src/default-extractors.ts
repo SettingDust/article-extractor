@@ -1,10 +1,6 @@
 import titleExtractor from './title-extractor'
 import urlExtractor from './url-extractor'
-import {
-  Extractor,
-  ExtractorExtracted,
-  ExtractorProcessed
-} from './utils/extractors'
+import { Extractor, ExtractorExtracted } from './utils/extractors'
 
 /**
  * Optional defaultExtractors that mutable
@@ -23,6 +19,5 @@ export type TitleExtracted = ExtractorExtracted<typeof titleExtractor>
 export type UrlExtracted = ExtractorExtracted<typeof urlExtractor>
 
 export default defaultExtractors as Extractor<
-  ExtractorExtracted<DefaultExtractors>,
-  ExtractorProcessed<DefaultExtractors>
+  ExtractorExtracted<DefaultExtractors>
 >[]
