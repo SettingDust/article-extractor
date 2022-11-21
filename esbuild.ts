@@ -48,6 +48,7 @@ await build({
   target: 'es2022',
   platform: 'browser',
   outfile: 'dist/article-extractor.browser.js',
+  external: ['urlpattern-polyfill'],
   plugins: [
     {
       name: 'browser-resolver',

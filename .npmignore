@@ -1,0 +1,20 @@
+tsconfig*.json
+TODO.md
+
+### Test
+coverage
+*.log
+.c8rc
+.mocharc.json
+test
+
+### Yarn
+.yarn
+.yarnrc.yml
+yarn.lock
+
+.prettierignore
+.prettierrc
+esbuild.ts
+.eslintrc
+.idea
