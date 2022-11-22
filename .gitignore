@@ -2,7 +2,6 @@
 .idea/*
 !.idea/prettier.xml
 !.idea/codeStyles
-!.idea/article-extractor.iml
 ### Node
 node_modules
 

@@ -8,11 +8,11 @@ article-extractor is a tool that extract content from a webpage.
 
 ### Node.js
 
-`yarn add article-extractor`  
-`npm i article-extractor`
+`yarn add @settingdust/article-extractor`  
+`npm i @settingdust/article-extractor`
 
 ```js
-import { extract } from 'article-extractor'
+import { extract } from '@settingdust/article-extractor'
 ```
 
 ## API
