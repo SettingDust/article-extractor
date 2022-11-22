@@ -1,6 +1,6 @@
 {
   "name": "@settingdust/article-extractor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/article-extractor.esm.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -44,6 +44,7 @@
     "esbuild-plugin-d.ts": "^1.1.0",
     "esbuild-plugin-node-externals": "^1.0.1",
     "esbuild-plugin-polyfill-node": "^0.1.2",
+    "esbuild-plugin-wasm": "^1.0.0",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.2",

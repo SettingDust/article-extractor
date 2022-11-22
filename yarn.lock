@@ -348,6 +348,7 @@ __metadata:
     esbuild-plugin-d.ts: ^1.1.0
     esbuild-plugin-node-externals: ^1.0.1
     esbuild-plugin-polyfill-node: ^0.1.2
+    esbuild-plugin-wasm: ^1.0.0
     eslint: ^8.28.0
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.2
@@ -2638,6 +2639,13 @@ __metadata:
   peerDependencies:
     esbuild: "*"
   checksum: 2e674a7c166c830de9a6a6459f83acf84972ee8f9b878a4baded03576bdb201b2e21157ad98f9d790fca7272d8f8fde43aa409345e4306dffa49fe95cf3b21e6
+  languageName: node
+  linkType: hard
+
+"esbuild-plugin-wasm@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "esbuild-plugin-wasm@npm:1.0.0"
+  checksum: 972e7cf22f486ffda11649ed2eba59ef8d3f3a85fbec24bc35b7903232d1595978dafb235bde4ef5c65c68622e137723b16adae4502cce87e93f00239575e526
   languageName: node
   linkType: hard
 

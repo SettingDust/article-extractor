@@ -6,7 +6,7 @@ if (!globalThis.URLPattern) {
 
 export interface ContentSelector {
   selector: string[]
-  ignored: string[]
+  ignored?: string[]
 }
 
 export const selectors = new Map<URLPattern, ContentSelector>()

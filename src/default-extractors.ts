@@ -10,7 +10,7 @@ const defaultExtractors = await Promise.all([
   import('./author-url-extractor'),
   import('./published-date-extractor'),
   import('./modified-date-extractor'),
-  import('./content-extractor/index')
+  import('./content-extractor')
 ]).then((it) => it.map((it) => it.default))
 
 export type DefaultExtractors = typeof defaultExtractors[number]
