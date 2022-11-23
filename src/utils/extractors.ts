@@ -42,8 +42,11 @@ export class ExtractOperators extends Array<[string, ExtractOperator]> {
     let index = this.length
     while (index--) {
       const current = items[index][0]
-      if (!keys.has(current)) keys.add(current)
-      else items.splice(index, 1)
+      if (keys.has(current)) {
+        items.splice(index, 1)
+      } else {
+        keys.add(current)
+      }
     }
     this.removeIf(([it]) => keys.has(it))
     return super.push(...items)

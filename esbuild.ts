@@ -1,7 +1,6 @@
 import { build as _build, BuildOptions } from 'esbuild'
 import _merge from 'ts-deepmerge'
 import { interopImportCJSDefault } from 'node-cjs-interop'
-import { dtsPlugin } from 'esbuild-plugin-d.ts'
 import nodeExternals from 'esbuild-plugin-node-externals'
 import * as fs from 'node:fs/promises'
 import path from 'node:path'
@@ -29,7 +28,6 @@ await build({
   platform: 'node',
   outfile: 'dist/article-extractor.node.js',
   plugins: [
-    dtsPlugin(),
     nodeExternals({
       packagePaths: './package.json'
     })

@@ -77,11 +77,9 @@ export async function extract<T>(
 
   const title = titleExtractor.selector(
     titleExtractor.processor(
-      [
-        ...titleExtractor.operators
-          .flatMap((it) => it[1](document))
-          .filter((it) => !!it)
-      ],
+      titleExtractor.operators
+        .flatMap((it) => it[1](document))
+        .filter((it) => !!it),
       options
     ),
     undefined,
@@ -90,11 +88,9 @@ export async function extract<T>(
 
   const url = urlExtractor.selector(
     urlExtractor.processor(
-      [
-        ...urlExtractor.operators
-          .flatMap((it) => it[1](document))
-          .filter((it) => !!it)
-      ],
+      urlExtractor.operators
+        .flatMap((it) => it[1](document))
+        .filter((it) => !!it),
       options
     ),
     title.title,
@@ -117,11 +113,10 @@ export async function extract<T>(
   const results = await Promise.all(options.extractors).then((it) =>
     it
       .map(({ operators, processor, selector }) => {
-        const operated = [
-          ...operators
-            .flatMap((it) => it[1](document, url.url))
-            .filter((it) => !!it)
-        ]
+        const operated = operators
+          .flatMap((it) => it[1](document, url.url))
+          .filter((it) => !!it)
+
         const processed = dedupe(processor(operated, context))
         if (processed.length > 0)
           return selector(processed, title.title, context)
