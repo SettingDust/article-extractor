@@ -66,14 +66,10 @@ export async function extract<T>(
   }
   const document =
     typeof html === 'string'
-      ? <Document>(
-          (<unknown>(
-            new DOMParser().parseFromString(
-              sanitizeHtml(html, options.sanitizeHtml),
-              'text/html'
-            )
-          ))
-        )
+      ? (new DOMParser().parseFromString(
+          sanitizeHtml(html, options.sanitizeHtml),
+          'text/html'
+        ) as unknown as Document)
       : html
 
   options.lang ??= document.documentElement.lang
