@@ -10,6 +10,9 @@ type MergedExtracted<T> = NestedPartial<DeepMerged<T>> &
   TitleExtracted &
   UrlExtracted
 type DefaultExtracted = MergedExtracted<ExtractorExtracted<DefaultExtractors>>
+
+export { selectors as contentSelectors } from './content-extractor/selector-extractors'
+
 export interface ExtractOptions<T> {
   /**
    * Url for the page. **may not be the final result**
