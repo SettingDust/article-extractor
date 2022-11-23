@@ -1,7 +1,7 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-url/index.js
 
 import jsonld from './utils/jsonld'
-import { absoluteUrl, normalizeUrl } from './utils/urls'
+import { absolutifyUrl, normalizeUrl } from './utils/urls'
 import isURI from '@stdlib/assert-is-uri'
 import { closest } from './utils/memoized-functions'
 import elements from './utils/elements'
@@ -54,7 +54,7 @@ export default <Extractor<{ url: string }>>{
 
   processor: memoized((value, context) =>
     value
-      .map((it) => normalizeUrl(absoluteUrl(context?.url, it)))
+      .map((it) => normalizeUrl(absolutifyUrl(context?.url, it)))
       .filter((it) => isURI(it))
   ),
 

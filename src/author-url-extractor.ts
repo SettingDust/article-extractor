@@ -3,7 +3,7 @@
 import { Organization, Person } from 'schema-dts'
 import jsonld from './utils/jsonld'
 import elements from './utils/elements'
-import { absoluteUrl, normalizeUrl } from './utils/urls'
+import { absolutifyUrl, normalizeUrl } from './utils/urls'
 import isURI from '@stdlib/assert-is-uri'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'
@@ -61,7 +61,7 @@ export default <Extractor<{ author: { url: string } }>>{
   }),
   processor: memoized((value, context) =>
     value
-      .map((it) => normalizeUrl(absoluteUrl(context.url, it)))
+      .map((it) => normalizeUrl(absolutifyUrl(context.url, it)))
       .filter((it) => isURI(it))
   ),
   selector: (source) => ({ author: { url: source[0] } })

@@ -7,15 +7,7 @@ import { minifyHtml } from '../utils/memoized-functions'
 
 export default <Extractor<{ content: string }>>{
   operators: new ExtractOperators({
-    readability: (document, url) => {
-      const result = new Readability(document)
-      if (!document.baseURI && url) {
-        const base = document.createElement('base')
-        base.setAttribute('href', url)
-        document.head.append(base)
-      }
-      return document.baseURI ? [result.parse()?.content] : []
-    },
+    readability: (document) => [new Readability(document).parse()?.content],
     selector: (document, url) => {
       let result = ''
       for (const [key, value] of selectors.entries()) {

@@ -12,6 +12,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@availity/resolve-url@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@availity/resolve-url@npm:2.0.3"
+  checksum: 254ef04901b924a3afb933db68554a1e00b910c01c3b371920866daf989ab6103b0b697a02393ba83890e0da5cb17b323fa0749878122f134d682189c47610ac
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0":
   version: 7.18.6
   resolution: "@babel/code-frame@npm:7.18.6"
@@ -325,6 +332,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@settingdust/article-extractor@workspace:."
   dependencies:
+    "@availity/resolve-url": ^2.0.3
     "@esbuild-kit/esm-loader": ^2.5.0
     "@microsoft/recognizers-text-date-time": ^1.3.0
     "@minify-html/wasm": ^0.10.3

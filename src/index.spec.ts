@@ -9,7 +9,7 @@ describe('article-extractor', () => {
       await extract(readFileSync('./test/meta-test.html', { encoding: 'utf8' }))
     ).deep.equals({
       title: 'jsonld',
-      author: { name: 'jsonld', url: 'https://jsonld.com/' },
+      author: { name: 'jsonld', url: 'https://jsonld.com' },
       url: 'https://jsonld.com',
       content:
         '<div><h2>class-title</h2><h2><a href="https://a-title.com/">a-title</a></h2><h3><a href="https://entry-title.com/">entry-title</a></h3><h3><a href="https://post-title.com/">post-title</a></h3> <a href="https://itemprop.com/">itemprop</a> <a href="https://rel2.com/">rel2</a> <a href="https://aclass.com/">a class</a> <a href="https://href.com/author/">href</a><h5><a href="https://classa.com/">class a</a></h5><h5>class</h5><h5> <span>itemprop name</span> <a href="https://itemprop-url.com/"></a>\r\n</h5></div>'
@@ -34,7 +34,7 @@ describe('article-extractor', () => {
     ).deep.equals({
       author: {
         name: 'Joy Bose',
-        url: 'https://joyboseroy.medium.com/'
+        url: 'https://joyboseroy.medium.com'
       },
       date: {
         modified: new Date('2021-12-14T22:02:20.308Z'),

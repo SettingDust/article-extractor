@@ -11,6 +11,7 @@ import { dedupe, deepMerge } from './utils/memoized-functions'
 import { Extractor, ExtractorExtracted } from './utils/extractors'
 import sanitizeHtml, { defaultSanitizeOptions } from './utils/sanitize-html'
 import sanitize from 'sanitize-html'
+import { absolutifyDocument } from './utils/urls'
 
 type MergedExtracted<T> = NestedPartial<DeepMerged<T>> &
   TitleExtracted &
@@ -64,7 +65,7 @@ export async function extract<T>(
     sanitizeHtml: defaultSanitizeOptions,
     ...options
   }
-  const document =
+  let document =
     typeof html === 'string'
       ? (new DOMParser().parseFromString(
           sanitizeHtml(html, options.sanitizeHtml),
@@ -99,6 +100,14 @@ export async function extract<T>(
     title.title,
     options
   )
+
+  if (!document.baseURI && url.url) {
+    const base = document.createElement('base')
+    base.setAttribute('href', url.url)
+    document.head.append(base)
+  }
+
+  document = absolutifyDocument(document)
 
   const context = {
     ...options,
