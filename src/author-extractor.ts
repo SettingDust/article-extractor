@@ -1,7 +1,6 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-author/index.js
 
 import jsonld from './utils/jsonld'
-/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from './utils/memoized-functions'
 import elements from './utils/elements'

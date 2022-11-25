@@ -3,7 +3,6 @@
 import jsonld from './utils/jsonld'
 import parseDate from './utils/parse-date'
 import elements from './utils/elements'
-/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'

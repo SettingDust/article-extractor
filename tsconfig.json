@@ -4,6 +4,7 @@
     "module": "ES2022",
     "sourceRoot": "./src",
     "strict": true,
+    "noImplicitReturns": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "moduleResolution": "Node",

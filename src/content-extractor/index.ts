@@ -1,5 +1,4 @@
 import { Readability } from '@mozilla/readability'
-/// <reference path="../../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import { selectors } from './selector-extractors'
 import { ExtractOperators, Extractor } from '../utils/extractors'
@@ -15,10 +14,12 @@ export default <Extractor<{ content: string }>>{
         if (key.test(url)) {
           if (value.ignored)
             for (const ignored of value.ignored) {
-              for (const it of document.querySelectorAll(ignored)) it.remove()
+              // eslint-disable-next-line unicorn/prefer-spread
+              for (const it of Array.from(document.querySelectorAll(ignored))) it.remove()
             }
           for (const selector of value.selector) {
-            for (const it of document.querySelectorAll(selector))
+            // eslint-disable-next-line unicorn/prefer-spread
+            for (const it of Array.from(document.querySelectorAll(selector)))
               result += it.outerHTML
           }
         }

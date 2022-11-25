@@ -4,7 +4,6 @@
 import jsonld from './utils/jsonld'
 import memoized from 'nano-memoize'
 import elements from './utils/elements'
-/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from './utils/memoized-functions'
 import { ExtractOperators, Extractor } from './utils/extractors'

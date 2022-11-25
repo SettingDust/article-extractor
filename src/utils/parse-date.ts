@@ -6,7 +6,6 @@ import {
 } from '@microsoft/recognizers-text-date-time'
 import isDigitString from '@stdlib/assert-is-digit-string'
 import dedupe from 'dedupe'
-/// <reference path="../../src/@types/contains-chinese.d.ts"/>
 import containsChinese from 'contains-chinese'
 import memoized from 'nano-memoize'
 
@@ -36,37 +35,36 @@ const toDate = ({ typeName, resolution }: DateTimeModelResult) =>
       : resolution.values[0].value
   )
 
-const resultToDate = memoized(
-  (results: DateTimeModelResult[]): Date | undefined => {
-    results = dedupe(results, (it) => it.typeName)
-    let accumulator = new Date()
-    let success = false
-    for (const result of results) {
-      const date = toDate(result)
-      if (result.typeName.includes(`.${Constants.SYS_DATETIME_DATETIME}`)) {
-        accumulator = date
-        success = true
-      } else if (result.typeName.includes(`.${Constants.SYS_DATETIME_DATE}`)) {
-        accumulator.setFullYear(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate()
-        )
-        success = true
-      } else if (result.typeName.includes(`.${Constants.SYS_DATETIME_TIME}`)) {
-        accumulator.setHours(
-          date.getHours(),
-          date.getMinutes(),
-          date.getSeconds(),
-          date.getMilliseconds()
-        )
-        success = true
-      }
+const resultToDate = memoized((results: DateTimeModelResult[]) => {
+  results = dedupe(results, (it) => it.typeName)
+  let accumulator = new Date()
+  let success = false
+  for (const result of results) {
+    const date = toDate(result)
+    if (result.typeName.includes(`.${Constants.SYS_DATETIME_DATETIME}`)) {
+      accumulator = date
+      success = true
+    } else if (result.typeName.includes(`.${Constants.SYS_DATETIME_DATE}`)) {
+      accumulator.setFullYear(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      )
+      success = true
+    } else if (result.typeName.includes(`.${Constants.SYS_DATETIME_TIME}`)) {
+      accumulator.setHours(
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds(),
+        date.getMilliseconds()
+      )
+      success = true
     }
-    if (success)
-      return Number.isNaN(accumulator.getTime()) ? undefined : accumulator
   }
-)
+  if (success)
+    return Number.isNaN(accumulator.getTime()) ? undefined : accumulator
+  return
+})
 
 export const guessLocale = (input: string) =>
   containsChinese(input) ? Culture.Chinese : Culture.English

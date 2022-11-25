@@ -128,6 +128,7 @@ export async function extract<T extends object>(
         const processed = dedupe(processor([...operated], context))
         if (processed.length > 0)
           return selector(processed, title.title, context)
+        return
       })
       .filter((it): it is T => !!it)
   )

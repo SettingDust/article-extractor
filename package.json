@@ -1,6 +1,6 @@
 {
   "name": "@settingdust/article-extractor",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "main": "dist/article-extractor.esm.js",
   "types": "src/index.d.ts",
   "license": "MIT",
@@ -14,8 +14,8 @@
   },
   "exports": {
     ".": {
-      "node": "./dist/article-extractor.node.js",
-      "browser": "./dist/article-extractor.browser.js",
+      "node": "./dist/article-extractor.js",
+      "browser": "./dist/article-extractor.node.browser.js",
       "default": "./dist/article-extractor.esm.js"
     },
     "./src": "./src"

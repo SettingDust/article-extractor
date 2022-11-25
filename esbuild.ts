@@ -22,11 +22,11 @@ const commonOptions = <BuildOptions>{
 const build = (options: BuildOptions) => _build(merge(commonOptions, options))
 
 await fs.rm('dist', { recursive: true, force: true })
-console.log('Building node')
+console.log('Building')
 await build({
-  target: 'node16',
+  target: 'es2022',
   platform: 'node',
-  outfile: 'dist/article-extractor.node.js',
+  outfile: 'dist/article-extractor.js',
   plugins: [
     nodeExternals({
       packagePaths: './package.json'
@@ -107,5 +107,19 @@ await build({
     wasmLoader({
       mode: 'deferred'
     })
+  ]
+})
+
+console.log('Building node browser bundle')
+await build({
+  target: 'es2022',
+  platform: 'browser',
+  outfile: 'dist/article-extractor.node.browser.js',
+  plugins: [
+    nodeExternals({
+      packagePaths: './package.json',
+      include: ['linkedom']
+    }),
+    browserResolver
   ]
 })

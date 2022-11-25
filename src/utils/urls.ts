@@ -21,12 +21,16 @@ export const absolutifyUrl = memoized((base = '', relative = '') =>
 export const absolutifyDocument = memoized(
   (document: Document, baseUrl = document.baseURI) => {
     if (!baseUrl) return document
-    for (const element of document.querySelectorAll('a')) {
+    // It's useful for browser types
+    // eslint-disable-next-line unicorn/prefer-spread
+    for (const element of Array.from(document.querySelectorAll('a'))) {
       const href = element.getAttribute('href')
       if (href) element.setAttribute('href', absolutifyUrl(baseUrl, href))
     }
 
-    for (const element of document.querySelectorAll('img')) {
+    // It's useful for browser types
+    // eslint-disable-next-line unicorn/prefer-spread
+    for (const element of Array.from(document.querySelectorAll('img'))) {
       const source = element.dataset.src ?? element.getAttribute('src')
       if (source) element.setAttribute('src', absolutifyUrl(baseUrl, source))
     }

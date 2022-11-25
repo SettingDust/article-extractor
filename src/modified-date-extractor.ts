@@ -2,7 +2,6 @@
 
 import parseDate from './utils/parse-date'
 import jsonld from './utils/jsonld'
-/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import elements from './utils/elements'
 import memoized from 'nano-memoize'

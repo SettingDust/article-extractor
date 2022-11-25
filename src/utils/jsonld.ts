@@ -7,6 +7,7 @@ const parse = memoized((document: Document) => {
     'script[type="application/ld+json"]'
   )?.textContent
   if (json) return <Graph>JSON.parse(json)
+  return
 })
 
 const getObject = memoized(
