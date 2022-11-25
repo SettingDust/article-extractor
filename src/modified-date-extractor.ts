@@ -2,18 +2,23 @@
 
 import parseDate from './utils/parse-date'
 import jsonld from './utils/jsonld'
+/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import elements from './utils/elements'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'
+import { CreativeWork, DataFeedItem, MediaObject } from 'schema-dts'
 
 export default <Extractor<{ date: { modified: Date } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
-      return [
-        ...jsonld.get<string>(json, 'dateModified'),
-        ...jsonld.get<string>(json, 'uploadDate')
+      return <(string | undefined)[]>[
+        ...jsonld.getObject<CreativeWork | DataFeedItem, 'dateModified'>(
+          json,
+          'dateModified'
+        ),
+        ...jsonld.getObject<MediaObject, 'uploadDate'>(json, 'uploadDate')
       ]
     },
     'meta updated': (document) =>

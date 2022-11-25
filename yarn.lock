@@ -90,6 +90,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild-kit/esm-loader@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "@esbuild-kit/esm-loader@npm:2.5.1"
+  dependencies:
+    "@esbuild-kit/core-utils": ^3.0.0
+    get-tsconfig: ^4.2.0
+  checksum: 1bf0c1a0ff999407ddc629b228c518cb21c5068c9e5b5fc99539fe38f893fd93bc0f205d406a929a9ecddf9942f53f32a259b0303f23dcd5423e75c7991bab56
+  languageName: node
+  linkType: hard
+
 "@esbuild/android-arm@npm:0.15.15":
   version: 0.15.15
   resolution: "@esbuild/android-arm@npm:0.15.15"
@@ -326,7 +336,7 @@ __metadata:
   resolution: "@settingdust/article-extractor@workspace:."
   dependencies:
     "@availity/resolve-url": ^2.0.3
-    "@esbuild-kit/esm-loader": ^2.5.0
+    "@esbuild-kit/esm-loader": ^2.5.1
     "@microsoft/recognizers-text-date-time": ^1.3.0
     "@minify-html/wasm": ^0.10.3
     "@mozilla/readability": ^0.4.2
@@ -360,7 +370,7 @@ __metadata:
     fastest-levenshtein: ^1.0.16
     html-crush: ^5.1.22
     is-string-blank: ^1.0.1
-    linkedom: ^0.14.20
+    linkedom: ^0.14.21
     mocha: ^10.1.0
     nano-memoize: ^1.3.1
     node-cjs-interop: ^0.1.1
@@ -4295,16 +4305,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"linkedom@npm:^0.14.20":
-  version: 0.14.20
-  resolution: "linkedom@npm:0.14.20"
+"linkedom@npm:^0.14.21":
+  version: 0.14.21
+  resolution: "linkedom@npm:0.14.21"
   dependencies:
     css-select: ^5.1.0
     cssom: ^0.5.0
     html-escaper: ^3.0.3
     htmlparser2: ^8.0.1
     uhyphen: ^0.1.0
-  checksum: 7ad9aa302d11732a304bd681ed920ab388c6b0240d3e064ae729e4b2d7e7bc63815a362accc58ef696e553a524d8a406f2480e1d170fd2369c615591f7c18162
+  checksum: 853a17ed9090dab1bbc09a1a5c4f3873de1b4ad137d2954690c98f550fd59c622cc7795a45c8e462b29ffcaa70af21d26da63e3949602e72be3aeaa3aec68068
   languageName: node
   linkType: hard
 

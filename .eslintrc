@@ -8,8 +8,8 @@
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:@typescript-eslint/recommended",
-    "plugin:unicorn/recommended",
-    "plugin:prettier/recommended"
+    "plugin:unicorn/recommended"
+//    "plugin:prettier/recommended"
   ],
   "parserOptions": {
     "project": "./tsconfig.json"

@@ -1,6 +1,7 @@
 import jsonld from './jsonld'
 import { expect } from 'chai'
 import parseHtml from './parse-html'
+import { Article, Thing } from 'schema-dts'
 
 describe('jsonld', () => {
   describe('parse', () => {
@@ -31,7 +32,7 @@ describe('jsonld', () => {
            "@graph": [{ "name": "Bar" }]
          }</script>`)
       const json = jsonld(document)
-      const name = jsonld.get<string>(json, 'name')
+      const name = jsonld.getObject<Thing, 'name'>(json, 'name')
       expect(name.every((it) => it === 'Bar')).be.true
       expect(name).has.lengthOf(2)
     })
@@ -50,10 +51,10 @@ describe('jsonld', () => {
             }]
         }</script>`)
       const json = jsonld(document)
-      const name = jsonld.get<string>(
+      const name = jsonld.getObject<Article, 'name'>(
         json,
         'name',
-        (it) => it['@type'] === 'Article'
+        (it) => typeof it === 'object' && it['@type'] === 'Article'
       )
       expect(name.every((it) => it === 'Bar')).be.true
       expect(name).has.lengthOf(2)

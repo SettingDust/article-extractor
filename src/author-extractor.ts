@@ -1,25 +1,50 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-author/index.js
 
-import { Organization, Person } from 'schema-dts'
 import jsonld from './utils/jsonld'
+/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from './utils/memoized-functions'
 import elements from './utils/elements'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'
+import { CreativeWork, Rating } from 'schema-dts'
 
 export default <Extractor<{ author: { name: string } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
-      const author = jsonld.get<Person | Organization>(
+      const authors = jsonld.getObject<Exclude<CreativeWork, Rating>, 'author'>(
         json,
         'author',
-        (it) => !it['@type']?.endsWith('Rating')
+        (it) =>
+          typeof it !== 'string' &&
+          !['EndorsementRating', 'AggregateRating', 'Rating'].includes(
+            it['@type']
+          )
       )
-      return author.map((it) =>
-        typeof it === 'string' ? it : it.name.toString()
-      )
+      return authors.flatMap((author) => {
+        if (author === undefined) return []
+        if (typeof author === 'string') return [author]
+        if (Array.isArray(author))
+          // Should we support multiple authors?
+          return author.flatMap((it) => {
+            if (typeof it === 'string') return [it]
+            else if ('name' in it) {
+              const name = it.name
+              if (typeof name === 'string') return [name]
+              else if (typeof it === 'object' && 'textValue' in it)
+                return [it.textValue]
+
+            } else if ('@id' in it) {
+              const id = it['@id']
+              if (typeof id === 'string') return [id]
+            }
+            return []
+          })
+        if (author && 'name' in author ) return [author.name?.toString()]
+        if (author && '@id' in author ) return [author['@id']]
+        return []
+      })
     },
     meta: (document) =>
       elements.attribute(

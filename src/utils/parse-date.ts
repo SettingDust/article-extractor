@@ -6,6 +6,7 @@ import {
 } from '@microsoft/recognizers-text-date-time'
 import isDigitString from '@stdlib/assert-is-digit-string'
 import dedupe from 'dedupe'
+/// <reference path="../../src/@types/contains-chinese.d.ts"/>
 import containsChinese from 'contains-chinese'
 import memoized from 'nano-memoize'
 

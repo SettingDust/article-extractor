@@ -1,38 +1,37 @@
-import { Graph } from 'schema-dts'
+import { Graph, Thing } from 'schema-dts'
 import memoized from 'nano-memoize'
+import { AllKeys } from './types'
 
 const parse = memoized((document: Document) => {
   const json = document.querySelector(
     'script[type="application/ld+json"]'
   )?.textContent
-  if (json)
-    return <Graph>(
-      JSON.parse(
-        document.querySelector('script[type="application/ld+json"]')
-          ?.textContent
-      )
-    )
+  if (json) return <Graph>JSON.parse(json)
 })
 
-const get = memoized(
-  <T>(
+const getObject = memoized(
+  <T extends Thing, U extends AllKeys<T>>(
     graph?: Graph,
-    name?: string,
-    predicate: (Thing) => boolean = () => true
-  ) => {
-    if (!graph) return []
+    name?: U,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    predicate = (thing: Thing): boolean => true
+  ): T[U][] => {
+    if (!graph || !name) return []
     const { '@graph': innerGraph, ...properties } = graph
-    const result = Object.entries(properties)
-      .filter(([key, value]) => key.endsWith(name) && value)
-      .map((it) => <T>it[1])
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const result = properties[name] ? [<T[U]>properties[name]] : []
     if (innerGraph)
-      result.push(
-        ...innerGraph
-          .filter((it) => predicate(it) && <T>it[name])
-          .map((it) => <T>it[name])
-      )
+      for (const element of innerGraph) {
+        if (
+          predicate(element) &&
+          typeof element === 'object' &&
+          name in element
+        )
+          result.push((<T>element)[name])
+      }
     return result
   }
 )
 
-export default Object.assign(parse, { get })
+export default Object.assign(parse, { getObject })

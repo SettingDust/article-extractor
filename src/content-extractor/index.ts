@@ -1,5 +1,6 @@
-import isStringBlank from 'is-string-blank'
 import { Readability } from '@mozilla/readability'
+/// <reference path="../../src/@types/is-string-blank.d.ts"/>
+import isStringBlank from 'is-string-blank'
 import { selectors } from './selector-extractors'
 import { ExtractOperators, Extractor } from '../utils/extractors'
 import sanitizeHtml, { defaultSanitizeOptions } from '../utils/sanitize-html'
@@ -12,9 +13,10 @@ export default <Extractor<{ content: string }>>{
       let result = ''
       for (const [key, value] of selectors.entries()) {
         if (key.test(url)) {
-          for (const ignored of value.ignored) {
-            for (const it of document.querySelectorAll(ignored)) it.remove()
-          }
+          if (value.ignored)
+            for (const ignored of value.ignored) {
+              for (const it of document.querySelectorAll(ignored)) it.remove()
+            }
           for (const selector of value.selector) {
             for (const it of document.querySelectorAll(selector))
               result += it.outerHTML

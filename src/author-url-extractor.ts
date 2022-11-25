@@ -1,6 +1,6 @@
 // https://github.com/microlinkhq/metascraper/blob/master/packages/metascraper-author/index.js
 
-import { Organization, Person } from 'schema-dts'
+import { CreativeWork, Rating, Thing } from 'schema-dts'
 import jsonld from './utils/jsonld'
 import elements from './utils/elements'
 import { absolutifyUrl, normalizeUrl } from './utils/urls'
@@ -12,14 +12,44 @@ export default <Extractor<{ author: { url: string } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
-      const author = jsonld.get<Person | Organization>(
+      const authors = jsonld.getObject<Exclude<CreativeWork, Rating>, 'author'>(
         json,
         'author',
-        (it) => !it['@type']?.endsWith('Rating')
+        (it) =>
+          typeof it !== 'string' &&
+          !['EndorsementRating', 'AggregateRating', 'Rating'].includes(
+            it['@type']
+          )
       )
-      return author.map((it) =>
-        typeof it === 'string' ? it : it.url.toString()
-      )
+      return authors.flatMap((author) => {
+        type AuthorArray = NonNullable<
+          Exclude<
+            typeof author,
+            | Thing
+            | {
+            '@id': string
+          }
+          >
+        >
+        if (author === undefined) return []
+        if (typeof author === 'string') return [author]
+        if (Array.isArray(author))
+          return (<AuthorArray>author).flatMap((it) => {
+            if (typeof it === 'string') return [it]
+            else if ('name' in it) {
+              const url = it.url
+              // URL should be a string
+              if (typeof url === 'string') return [url]
+            } else if ('@id' in it) {
+              const id = it['@id']
+              return [id]
+            }
+            return []
+          })
+        if (author && 'url' in author) return [author.url?.toString()]
+        if (author && '@id' in author) return [author['@id']]
+        return []
+      })
     },
     'meta article': (document) =>
       elements.attribute(
@@ -61,7 +91,7 @@ export default <Extractor<{ author: { url: string } }>>{
   }),
   processor: memoized((value, context) =>
     value
-      .map((it) => normalizeUrl(absolutifyUrl(context.url, it)))
+      .map((it) => normalizeUrl(absolutifyUrl(context?.url, it)))
       .filter((it) => isURI(it))
   ),
   selector: (source) => ({ author: { url: source[0] } })

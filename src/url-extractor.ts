@@ -7,14 +7,21 @@ import { closest } from './utils/memoized-functions'
 import elements from './utils/elements'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'
+import { CreativeWork } from 'schema-dts'
 
 export default <Extractor<{ url: string }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
-      return jsonld.get<string>(json, 'url', (it) =>
-        it['@type']?.endsWith('Page')
-      )
+      return <(string | undefined)[]>jsonld.getObject<CreativeWork, 'url'>(
+        json,
+        'url',
+        /**
+         * Should be a {@link CreativeWork}
+         * @see https://schema.org/headline
+         */
+        (it) => typeof it !== 'string' && 'headline' in it
+      ) // URL should be a string
     },
     'meta og': (document) =>
       elements.attribute(
@@ -60,6 +67,7 @@ export default <Extractor<{ url: string }>>{
 
   selector: memoized((value, title, context) => {
     if (context?.url) value.push(context?.url)
+    if (!title) return { url: value[0] }
     const { distance, result } = closest(title, ...value)
     return distance > 0.7 * title.length
       ? { url: context?.url ?? value[0] }

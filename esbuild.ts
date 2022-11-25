@@ -1,4 +1,4 @@
-import { build as _build, BuildOptions } from 'esbuild'
+import { build as _build, BuildOptions, Plugin } from 'esbuild'
 import _merge from 'ts-deepmerge'
 import { interopImportCJSDefault } from 'node-cjs-interop'
 import nodeExternals from 'esbuild-plugin-node-externals'
@@ -64,7 +64,7 @@ await build({
   ]
 })
 
-const browserResolver = {
+const browserResolver = <Plugin>{
   name: 'browser-resolver',
   setup(build) {
     build.onResolve(

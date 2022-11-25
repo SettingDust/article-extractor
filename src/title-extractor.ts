@@ -4,9 +4,11 @@
 import jsonld from './utils/jsonld'
 import memoized from 'nano-memoize'
 import elements from './utils/elements'
+/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import { condenseWhitespace } from './utils/memoized-functions'
 import { ExtractOperators, Extractor } from './utils/extractors'
+import { CreativeWork } from 'schema-dts'
 
 const SEPARATORS = ['|', '-', '\\', '/', '>', '»', '·', '–'].map(
   (it) => ` ${it} `
@@ -16,7 +18,7 @@ export default <Extractor<{ title: string }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
-      return jsonld.get<string>(json, 'headline')
+      return <(string | undefined)[]>jsonld.getObject<CreativeWork, 'headline'>(json, 'headline') // Maybe string only
     },
     'meta og': (document) =>
       elements.attribute(

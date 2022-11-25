@@ -58,11 +58,11 @@ export async function extract<T>(
   options?: ExtractOptions<T>
 ): Promise<MergedExtracted<T>>
 
-export async function extract<T>(
+export async function extract<T extends object>(
   html: string | Document,
   options: ExtractOptions<T> = {}
 ) {
-  options = {
+  const finalOptions = {
     extractors: <Extractor<T>[]>defaultExtractors,
     sanitizeHtml: defaultSanitizeOptions,
     ...options
@@ -70,36 +70,42 @@ export async function extract<T>(
   let document =
     typeof html === 'string'
       ? (new DOMParser().parseFromString(
-          sanitizeHtml(html, options.sanitizeHtml),
+          sanitizeHtml(html, finalOptions.sanitizeHtml),
           'text/html'
         ) as unknown as Document)
       : html
 
-  options.lang ??= document.documentElement.lang
+  finalOptions.lang ??= document.documentElement.lang
 
   const title = titleExtractor.selector(
     titleExtractor.processor(
-      titleExtractor.operators
-        .flatMap((it) => it[1](document))
-        .filter((it) => !!it),
-      options
+      // eslint-disable-next-line unicorn/no-useless-spread
+      [
+        ...titleExtractor.operators
+          .flatMap((it) => it[1](document))
+          .filter((it): it is string => !!it)
+      ],
+      finalOptions
     ),
     undefined,
-    options
+    finalOptions
   )
 
   const url = urlExtractor.selector(
     urlExtractor.processor(
-      urlExtractor.operators
-        .flatMap((it) => it[1](document))
-        .filter((it) => !!it),
-      options
+      // eslint-disable-next-line unicorn/no-useless-spread
+      [
+        ...urlExtractor.operators
+          .flatMap((it) => it[1](document))
+          .filter((it): it is string => !!it)
+      ],
+      finalOptions
     ),
     title.title,
-    options
+    finalOptions
   )
 
-  if (!document.baseURI && url.url) {
+  if (!document.baseURI && url?.url) {
     const base = document.createElement('base')
     base.setAttribute('href', url.url)
     document.head.append(base)
@@ -108,22 +114,22 @@ export async function extract<T>(
   document = absolutifyDocument(document)
 
   const context = {
-    ...options,
-    url: url.url
+    ...finalOptions,
+    url: url?.url
   }
 
-  const results = await Promise.all(options.extractors).then((it) =>
+  const results = await Promise.all(finalOptions.extractors).then((it) =>
     it
       .map(({ operators, processor, selector }) => {
         const operated = operators
           .flatMap((it) => it[1](document, url.url))
-          .filter((it) => !!it)
+          .filter((it): it is string => !!it)
 
-        const processed = dedupe(processor(operated, context))
+        const processed = dedupe(processor([...operated], context))
         if (processed.length > 0)
           return selector(processed, title.title, context)
       })
-      .filter((it) => !!it)
+      .filter((it): it is T => !!it)
   )
 
   const result = deepMerge(title, url, ...results)

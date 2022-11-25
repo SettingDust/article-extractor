@@ -20,6 +20,7 @@ export const absolutifyUrl = memoized((base = '', relative = '') =>
  */
 export const absolutifyDocument = memoized(
   (document: Document, baseUrl = document.baseURI) => {
+    if (!baseUrl) return document
     for (const element of document.querySelectorAll('a')) {
       const href = element.getAttribute('href')
       if (href) element.setAttribute('href', absolutifyUrl(baseUrl, href))

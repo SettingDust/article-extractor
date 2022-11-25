@@ -35,13 +35,13 @@ export type NestedPartial<T, IgnoredType = DefaultIgnored> = T extends (
     }>
   : T
 
-type IndexValue<T, K extends PropertyKey> = T extends unknown
+export type IndexValue<T, K extends PropertyKey> = T extends unknown
   ? K extends keyof T
     ? T[K]
     : never
   : never
 
-type AllKeys<T> = T extends unknown ? keyof T : never
+export type AllKeys<T> = T extends unknown ? keyof T : never
 
 type PartialKeys<T, K extends keyof T = never> = Omit<T, K> &
   Partial<Pick<T, K>> extends infer O

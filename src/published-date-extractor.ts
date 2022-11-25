@@ -3,17 +3,25 @@
 import jsonld from './utils/jsonld'
 import parseDate from './utils/parse-date'
 import elements from './utils/elements'
+/// <reference path="../src/@types/is-string-blank.d.ts"/>
 import isStringBlank from 'is-string-blank'
 import memoized from 'nano-memoize'
 import { ExtractOperators, Extractor } from './utils/extractors'
+import { CreativeWork, DataFeedItem, MediaObject } from 'schema-dts'
 
 export default <Extractor<{ date: { published: Date } }>>{
   operators: new ExtractOperators({
     jsonld: (document) => {
       const json = jsonld(document)
-      return [
-        ...jsonld.get<string>(json, 'datePublished'),
-        ...jsonld.get<string>(json, 'dateCreated')
+      return <(string | undefined)[]>[
+        ...jsonld.getObject<CreativeWork, 'datePublished'>(
+          json,
+          'datePublished'
+        ),
+        ...jsonld.getObject<CreativeWork | DataFeedItem, 'dateCreated'>(
+          json,
+          'dateCreated'
+        )
       ]
     },
     'meta published': (document) =>
@@ -53,7 +61,9 @@ export default <Extractor<{ date: { published: Date } }>>{
       ),
     'jsonld upload': (document) => {
       const json = jsonld(document)
-      return jsonld.get<string>(json, 'uploadDate')
+      return <(string | undefined)[]>(
+        jsonld.getObject<MediaObject, 'uploadDate'>(json, 'uploadDate')
+      )
     },
     'meta date': (document) =>
       elements.attribute(

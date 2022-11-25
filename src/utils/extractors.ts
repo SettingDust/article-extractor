@@ -1,7 +1,7 @@
 import memoized from 'nano-memoize'
 import sanitize from 'sanitize-html'
 
-export type ExtractOperator = (document: Document, url?: string) => string[]
+export type ExtractOperator = (document: Document, url?: string) => (string | undefined)[]
 
 export interface Extractor<T> {
   /**
