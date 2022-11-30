@@ -125,7 +125,7 @@ export async function extract<T extends object>(
           .flatMap((it) => it[1](document, url.url))
           .filter((it): it is string => !!it)
 
-        const processed = dedupe(processor([...operated], context))
+        const processed = dedupe(processor([...operated], context), (it) => it)
         if (processed.length > 0)
           return selector(processed, title.title, context)
         return
