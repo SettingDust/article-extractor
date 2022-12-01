@@ -14,7 +14,7 @@ const commonOptions = <BuildOptions>{
   bundle: true,
   format: 'esm',
   target: 'es2022',
-  minify: true,
+  minifySyntax: true,
   sourcemap: true,
   color: true,
   logLevel: 'info'

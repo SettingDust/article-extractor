@@ -1,6 +1,6 @@
 {
   "name": "@settingdust/article-extractor",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "dist/article-extractor.esm.js",
   "types": "src/index.d.ts",
   "license": "MIT",
