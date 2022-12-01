@@ -7,7 +7,6 @@ import { minifyHtml } from '../utils/memoized-functions'
 
 export default <Extractor<{ content: string }>>{
   operators: new ExtractOperators({
-    readability: (document) => [new Readability(document).parse()?.content],
     selector: (document, url) => {
       let result = ''
       for (const [key, value] of selectors.entries()) {
@@ -25,7 +24,8 @@ export default <Extractor<{ content: string }>>{
         }
       }
       return [result]
-    }
+    },
+    readability: (document) => [new Readability(document).parse()?.content]
   }),
   processor: (value) => value.filter((it) => !isStringBlank(it)),
   selector: (source, title, context) => ({
