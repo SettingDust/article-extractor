@@ -3,14 +3,14 @@ import isStringBlank from 'is-string-blank'
 import { selectors } from './selector-extractors'
 import { ExtractOperators, Extractor } from '../utils/extractors'
 import sanitizeHtml, { defaultSanitizeOptions } from '../utils/sanitize-html'
-import { minifyHtml } from '../utils/memoized-functions'
+import { minifyHtml, urlPattern } from '../utils/memoized-functions'
 
 export default <Extractor<{ content: string }>>{
   operators: new ExtractOperators({
     selector: (document, url) => {
       let result = ''
       for (const [key, value] of selectors.entries()) {
-        if (key.test(url)) {
+        if (urlPattern(key).test(url)) {
           if (value.ignored)
             for (const ignored of value.ignored) {
               // eslint-disable-next-line unicorn/prefer-spread

@@ -72,3 +72,9 @@ export const minifyHtml = memoized(
       ...options
     }).result
 )
+
+if (!('URLPattern' in globalThis)) {
+  await import('urlpattern-polyfill')
+}
+
+export const urlPattern = memoized((input: string) => new URLPattern(input))
