@@ -70,7 +70,7 @@
     "condense-whitespace": "^3.0.0",
     "contains-chinese": "^1.0.0",
     "dayjs": "^1.11.6",
-    "dedupe": "https://github.com/SettingDust/dedupe#dev_build",
+    "dedupe": "^4.0.3",
     "fastest-levenshtein": "^1.0.16",
     "html-crush": "^5.1.22",
     "is-string-blank": "^1.0.1",

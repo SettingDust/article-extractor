@@ -379,7 +379,7 @@ __metadata:
     condense-whitespace: ^3.0.0
     contains-chinese: ^1.0.0
     dayjs: ^1.11.6
-    dedupe: "https://github.com/SettingDust/dedupe#dev_build"
+    dedupe: ^4.0.3
     esbuild: ^0.15.16
     esbuild-plugin-node-externals: ^1.0.1
     esbuild-plugin-polyfill-node: ^0.1.2
@@ -1974,10 +1974,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedupe@https://github.com/SettingDust/dedupe#dev_build":
-  version: 4.0.1
-  resolution: "dedupe@https://github.com/SettingDust/dedupe.git#commit=0d3d84b5e096c44d06fd0d8b42908beecd674cef"
-  checksum: 522bcc2ca0b77cdb9a469e30aa2d2344d57e44b219021849c8ae2bd0bbab85442c796a38b0c341acb68848c38041c4f62a4cce61a6551078d8e45370d155e257
+"dedupe@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "dedupe@npm:4.0.3"
+  checksum: d8ee31aa1d77e171884356658d50f6947d7e2ac204f714463139b516be3a7fde791e80107a7d317749459b961dacd483839f4af00f005c72315be6c11a9e0bd9
   languageName: node
   linkType: hard
 
